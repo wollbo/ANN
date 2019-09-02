@@ -1,7 +1,15 @@
-function [outputArg1,outputArg2] = backward(inputArg1,inputArg2)
-%BACKWARD Summary of this function goes here
-%   Detailed explanation goes here
-outputArg1 = inputArg1;
-outputArg2 = inputArg2;
+function delta = backward(targets,Y,V,H)
+% Input: Target, Output
+% Output: delta maxtrix, each column represents a layer
+[~,dY] = sigmoid(Y);
+[~,dH] = sigmoid(H);
+
+delta_o = (Y - targets) .* dY;
+delta_h = (V * delta_o) .* dH;
+delta_h = delta_h(1:end-1,:);
+
+delta = [delta_h,delta_o];
+
+
 end
 
