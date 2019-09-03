@@ -9,8 +9,8 @@ alpha = 0.9;
 
 %%
 for k = 1:10000
-    [a,y] = forward(matrix,testdata);
-    delta = backward(targets,matrix,y(:,:,end),a);
-    dw = update(matrix,eta,alpha,delta,y,wmd);
+    [a,z] = forward(matrix,testdata);
+    delta = backward(targets,matrix,z(:,:,end),a);
+    dw = update(matrix,eta,alpha,delta,z,wmd);
     matrix = matrix+dw
 end

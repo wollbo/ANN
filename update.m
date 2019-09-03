@@ -4,7 +4,7 @@ function weightMatrixDelta = update(weightMatrix,eta,alpha,delta,output,weightMa
 % update over sum of errors for this layer
 depth = size(weightMatrix,3);
 for k = 1:depth
-    weightMatrixDelta(:,:,k) = -eta*(alpha*weightMatrixDelta(:,:,k)-(1-alpha)*delta*output'); %-eta*delta*output'; simple case
+    weightMatrixDelta(:,:,k) = -eta*(alpha*weightMatrixDelta(:,:,k)-(1-alpha)*delta(:,:,k)*output(:,:,k)'); %-eta*delta*output'; simple case
 end
 
 end
