@@ -9,7 +9,7 @@ datapoints = 100;
 
 [data target] = generateData(datapoints,mean,sigma);
 
-scatter(data(:,1),data(:,2),target.^3)
+scatter(data(:,1),data(:,2))
 
 %%
 nodes = 3;
