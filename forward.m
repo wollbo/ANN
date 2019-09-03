@@ -1,4 +1,4 @@
-function Y = forward(X,W,V)
+function yOut = forward(X,W,V)
 %FORWARD naive forward algorithm for two layer perceptron
 % X matrix: N rows (inputs) M columns (observations) input
 % W, V needs proper initialization w.r.t. X and bias terms
@@ -6,10 +6,12 @@ function Y = forward(X,W,V)
 nData = size(X,2);
 bias = ones(1,nData);
 
-H = sigmoid(W*[X;bias]);
-Y = sigmoid(V*H);
+hIn = W*[X;bias];
+hOut = sigmoid(hIn);
+yIn = V*hOut;
+yOut = sigmoid(yIn);
 
-% Note: H, O could be combined in a larger matrix/tensor 
+% Note: W,V could be combined in a larger matrix/tensor
 
 end
 
