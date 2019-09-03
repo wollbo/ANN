@@ -30,5 +30,5 @@ for k = 1:100000
     delta = backward(target,weightMatrix,y(:,:,end),a);
 %Weight update
     weightMatrixDelta = update(weightMatrix,eta,alpha,delta,y,weightMatrixDelta);
-    weightMatrix = weightMatrix + weightMatrixDelta
+    weightMatrix = weightMatrix - weightMatrixDelta
 end
