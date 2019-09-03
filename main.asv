@@ -1,0 +1,16 @@
+%% main
+
+%Generate Data
+mean = [1 2;5 7];
+sigma = [1 1;0.5 0.5];
+datapoints = 100;
+
+data = generateData(datapoints,mean,sigma);
+
+scatter
+
+%Forward Pass
+
+%Error Backpropagation
+
+%Weight update
