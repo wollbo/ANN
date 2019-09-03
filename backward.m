@@ -9,3 +9,4 @@ for k = 1:depth-1
     delta(:,:,end-k) = backwardGeneral(activation(:,end-k),weightMatrix(:,:,end-k),delta(:,:,end-k+1));
 end
 
+end

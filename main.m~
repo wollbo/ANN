@@ -12,9 +12,8 @@ datapoints = 100;
 scatter(data(:,1),data(:,2),target.^3)
 
 %%
-nodes = 3;
-layers = 2;
-weightMatrix = 0.01*rand(nodes,size(data,2),layers);
+nodes = 3
+weightMatrix = 0.01*rand(nodes,size(data,2),2);
 weightMatrixDelta = zeros(size(weightMatrix));
 alpha = 0.9;
 eta = 0.1;

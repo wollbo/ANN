@@ -1,0 +1,7 @@
+function weightMatrixDelta = update(weightMatrix,eta,alpha,delta,output)
+% weightMatrix update for one layer at a time
+% contains the weights for all layers
+% update over sum of errors for this layer
+for k = 1:
+ weightMatrixDelta = -eta*delta*output';
+
