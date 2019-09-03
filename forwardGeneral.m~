@@ -1,6 +1,0 @@
-function [outputArg1,outputArg2] = forwardGeneral(weightMatrix,input)
-%FORWARDGENERAL Generalized forward
-%   Input could come from previous layer!
-activation
-end
-

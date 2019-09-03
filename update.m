@@ -1,4 +1,4 @@
-function [outputArg1,outputArg2] = update(W,V,eta,alpha,delta)
+function [] = update(W,V,eta,alpha,delta)
 
   dw = (dw .* alpha) - (delta_h * pat) .* (1-alpha);
   dv = (dv .* alpha) - (delta_o * hout) .* (1-alpha);

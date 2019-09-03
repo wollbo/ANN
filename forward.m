@@ -11,6 +11,5 @@ for k = 1:depth
     input = output(:,:,k);
 end
 
-
 end
 
