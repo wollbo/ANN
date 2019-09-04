@@ -29,6 +29,7 @@ alpha = 0.9;
 [~,dY] = sigmoid(a2(:,end));
 delta2 = (z2 - t) .* dY;
 delta1 = backwardGeneral(a2,V,delta2);
+delta1 = delta1(1:end-1,:); % unclear if necessary
 
 %%
 %update
