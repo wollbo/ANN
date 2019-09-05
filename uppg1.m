@@ -24,22 +24,25 @@ W = 0.01*randn(nodes,inputs+1);
 eta = 0.0001;
 outputs = 1;
 alpha = 0.9;
+epochs = 10000;
+guess = zeros(epochs,length(t));
+error = zeros(epochs,1);
 %%
 % Perceptron learning rule
-for k = 1:10000
+for k = 1:epochs
 dW = -eta*(W*X-t)*X';
 W = W+dW;
+guess(k,:) = sign(W*X);
+error(k) = mean(guess(k,:)-t);
 end
 
-guess = sign(W*X)
-error = guess-t
-
+ plot(error)
 %% 
 % Delta learning rule
 
  dw = zeros(size(W));
  
- for k = 1:10000
+ for k = 1:epochs
  hin = W * X;
  hout = [2 ./ (1+exp(-hin)) - 1 ];
  
@@ -48,7 +51,10 @@ error = guess-t
  
  dw = (dw .* alpha) - (delta_o * X') .* (1-alpha);
  W = W + dw .* eta;
+ 
+guess(k,:) = sign(hout);
+error(k) = mean(guess(k,:)-t);
+ 
  end
  
-guess = sign(hout);
-error = mean(guess-t);
+ plot(error)
