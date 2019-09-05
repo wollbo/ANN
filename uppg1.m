@@ -33,7 +33,7 @@ for k = 1:epochs
 dW = -eta*(W*X-t)*X';
 W = W+dW;
 guess(k,:) = sign(W*X);
-error(k) = mean(guess(k,:)-t);
+error(k) = mean((guess(k,:)-t).^2);
 end
 
  plot(error)
@@ -53,8 +53,8 @@ end
  W = W + dw .* eta;
  
 guess(k,:) = sign(hout);
-error(k) = mean(guess(k,:)-t);
+error(k) = mean((guess(k,:)-t).^2);
  
  end
  
- plot(error)
+plot(error)

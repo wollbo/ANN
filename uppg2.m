@@ -43,7 +43,7 @@ y = zeros(size(t));
         guess(k,j) = sign(hout);
      end
      %guess(k,:) = sign(hout);
-     error(k) = mean(guess(k,:)-t);
+     error(k) = mean((guess(k,:)-t).^2);
  end
  
 plot(error)

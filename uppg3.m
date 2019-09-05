@@ -1,5 +1,5 @@
 %% uppg3
-% 
+% delta rule without bias
 
 %Generate Data
 mu = [1 2;5 7];%;-2 -5];
@@ -44,4 +44,4 @@ y = zeros(size(t));
  end
  
 guess = sign(hout);
-error = mean(y-t);
+error = mean((y-t).^2);
