@@ -1,0 +1,48 @@
+%% 3.2 Classification and Regression
+
+mu = [1 0.3;-1 0.3;0 -0.1];%;-2 -5];
+sigma = [0.2 0.2;0.2 0.2;0.3 0.3];%; 2 6];
+%mu = [1 2;5 7];%;-2 -5];
+%sigma = [1 0.8;0.5 2];%; 2 6];
+datapoints = 50;
+
+
+[data1, target1] = generateData(datapoints,[mu(1,:); mu(3,:)],[sigma(1,:); sigma(3,:)]);
+[data2, target2] = generateData(datapoints,[mu(2,:); mu(3,:)],[sigma(1,:); sigma(3,:)]);
+
+data = [data1; data2];
+target = [target1; target2];
+
+nodes1 = 5;
+nodes2 = 1;
+inputs = 2;
+W = 0.01*randn(nodes1,inputs+1);
+V = 0.01*randn(nodes2,inputs+1);
+eta = 0.0001;
+outputs = 1;
+alpha = 0.9;
+data1 = data1';
+data2 = data2';
+target1 = target1';
+target2 = target2';
+data = [data1 data2];
+target = [target1 target2];
+
+%%
+dw = zeros(size(W));
+ 
+for k = 1:epochs
+    [a1,z1] = forwardGeneral(W,X);
+    [a2,z2] = forwardGeneral(V,z1);
+    
+    delta_o = (z2 - t) .* ((1 + hout) .* (1 - hout)) * 0.5;
+    delta_o = delta_o(1:nodes, :);
+
+    dw = (dw .* alpha) - (delta_o * X') .* (1-alpha);
+    W = W + dw .* eta;
+
+    guess(k,:) = sign(hout);
+    error(k) = mean((guess(k,:)-t).^2);
+    % add tError as (W*data-targets)
+
+end
