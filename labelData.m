@@ -1,9 +1,8 @@
-function [labeledVector] = labelData(dataMatrix)
+function [labeledVector] = labelData(dataMatrix,labels)
 dataSize = size(dataMatrix);
 nLables = dataSize(3);
 
 labeledVector = [];
-labels = [-1 1]
 
 for i = 1:nLables
     tempData = dataMatrix(:,:,i);
