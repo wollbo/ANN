@@ -1,4 +1,4 @@
-%% 3.2 Classification and Regression
+%% 3.2.1 Classification and Regression
 
 clear all
 close all
@@ -46,6 +46,29 @@ hold on
 scatter(dataSplit2(1,:),dataSplit2(2,:))
 hold off
 
+%% Remove:
+% • random 25% from each class
+
+data = [data1(:,1:floor(length(data1)*0.75)) data2(:,1:floor(length(data2)*0.75))];
+test_data = [data1(:,ceil(length(data1)*0.75):end) data2(:,ceil(length(data2)*0.75):end)];
+
+target = [target1(1:floor(length(data1)*0.75)) target2(1:floor(length(data2)*0.75))];
+test_target = [target1(ceil(length(data1)*0.75):end) target2(ceil(length(data2)*0.75):end)];
+
+X_train = data;
+X_test = test_data;
+t_train = target;
+t_test = test_target;
+
+nData_train = length(X_train);
+nData_test = length(X_test);
+
+X_train = [X_train;ones(1,nData_train)];
+X_test = [X_test;ones(1,nData_test)];
+
+X = X_train;
+t = t_train;
+
 %%
 dw = zeros(size(W));
 dv = zeros(size(V));
@@ -72,6 +95,8 @@ for k = 1:epochs
     % add tError as (W*data-targets)
 
 end
+plot(rate) % do for 3/4 different datasets
+hold on
 
 %%
 
