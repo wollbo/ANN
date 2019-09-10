@@ -1,5 +1,7 @@
 %% 3.2 Classification and Regression
 
+clear all
+close all
 mu = [1 0.3;-1 0.3;0 -0.1];%;-2 -5];
 sigma = [0.2 0.2;0.2 0.2;0.3 0.3];%; 2 6];
 %mu = [1 2;5 7];%;-2 -5];
@@ -12,15 +14,6 @@ datapoints = 50;
 
 data = [data1; data2];
 target = [target1; target2];
-
-nodes1 = 5;
-nodes2 = 1;
-inputs = 2;
-W = 0.01*randn(nodes1,inputs+1);
-V = 0.01*randn(nodes2,inputs+1);
-eta = 0.0001;
-outputs = 1;
-alpha = 0.9;
 data1 = data1';
 data2 = data2';
 target1 = target1';
@@ -29,20 +22,62 @@ data = [data1 data2];
 target = [target1 target2];
 
 %%
+
+nodes1 = 10;
+nodes2 = 1;
+inputs = 2;
+W = 0.01*randn(nodes1,inputs+1);
+V = 0.01*randn(nodes2,nodes1);
+eta = 0.01;
+outputs = 1;
+alpha = 0.9;
+epochs = 1000;
+X = data;
+nData = length(X);
+X = [X;ones(1,nData)];
+t = target;
+
+%%
+
+dataSplit1 = data(:,target==1); % bara för viualisering
+dataSplit2 = data(:,target==-1);
+scatter(dataSplit1(1,:),dataSplit1(2,:))
+hold on
+scatter(dataSplit2(1,:),dataSplit2(2,:))
+hold off
+
+%%
 dw = zeros(size(W));
+dv = zeros(size(V));
  
 for k = 1:epochs
     [a1,z1] = forwardGeneral(W,X);
     [a2,z2] = forwardGeneral(V,z1);
     
-    delta_o = (z2 - t) .* ((1 + hout) .* (1 - hout)) * 0.5;
-    delta_o = delta_o(1:nodes, :);
+    [~,dY] = sigmoid2(a2); 
+    delta2 = (z2-t).*dY;
+    delta1 = backwardGeneral(a2,V,delta2);
 
-    dw = (dw .* alpha) - (delta_o * X') .* (1-alpha);
+    dw = updateGeneral(dw,eta,alpha,delta1,X);
+    dv = updateGeneral(dv,eta,alpha,delta2,z1);
+
+    dw = (dw .* alpha) - (delta1 * X') .* (1-alpha);
+    dv = (dv .* alpha) - (delta2 * z1') .* (1-alpha);
     W = W + dw .* eta;
+    V = V + dv .* eta;
 
-    guess(k,:) = sign(hout);
+    guess(k,:) = sign(z2);
     error(k) = mean((guess(k,:)-t).^2);
+    rate(k) = 1-length(target(target==guess(k,:)))/length(target);
     % add tError as (W*data-targets)
 
 end
+
+%%
+
+f1 = figure('Name', 'figures/32error')
+hold on
+plot(rate)
+ylabel('Error Rate')
+xlabel('Epoch')
+l
