@@ -65,14 +65,15 @@ target = [target1 target2];
 %% Remove:
 % • random 25% from each class
 
-data = [data1(:,datapoints*0.75) data2(:,datapoints*0.75)];
+data = [data1(:,1:round(datapoints*0.75)) data2(:,1:round(datapoints*0.75))];
+target = [target1(1:round(datapoints*0.75)) target2(1:round(datapoints*0.75))];
 
-X = data';
-t = target';
+X = data;
+t = target;
 %t(t==-1) = 0; % for sigmoid
 nData = length(X);
 X = [X;ones(1,nData)];
-epochs = 100;
+epochs = 1000;
 guess = zeros(epochs,length(t));
 error = zeros(epochs,1);
 
@@ -84,7 +85,7 @@ targetA = target(target==1);
 targetB = target(target==-1);
 
 tDataA = tDataA(:,1:datapoints);
-targetA = targetA(:,1:datapoints);
+targetA = targetA(1:datapoints);
 
 [shuffled,stargets] = shuffle(tDataA,tDataB,targetA,targetB);
 
@@ -161,6 +162,7 @@ for k = 1:epochs
 
     guess(k,:) = sign(hout);
     error(k) = mean((guess(k,:)-t).^2);
+    % add tError as (W*data-targets)
 
 end
  
