@@ -1,33 +1,40 @@
-%% 3.2.2 Autoencoder
+%% uppg 3.2.3 function approximation
 
-data = -1*ones(8);
-data = data+2*eye(8);
+x=[-5:0.5:5]';
+y=[-5:0.5:5]';
+z=exp(-x.*x*0.1) * exp(-y.*y*0.1)' - 0.5;
+mesh(x, y, z);
 
-target = data;
+ndata = length(x)*length(y);
 
-nodes1 = 3;
-nodes2 = 8;
-inputs = 8;
-W = 0.01*randn(nodes1,inputs+1);
-V = 0.01*randn(nodes2,nodes1+1);
-eta = 0.01;
-outputs = 8;
+targets = reshape(z, 1, ndata);
+[xx, yy] = meshgrid (x, y);
+patterns = [reshape(xx, 1, ndata); reshape(yy, 1, ndata)];
+
+nodes1 = 10;
+nodes2 = 1;
+inputs = 2;
+W = 0.001*randn(nodes1,inputs+1);
+V = 0.001*randn(nodes2,nodes1+1); % här är det skumt, bias terms??
+eta = 0.5;
+outputs = 1;
 alpha = 0.9;
-epochs = 10000;
-X = data;
+epochs = 1000;
+X = patterns;
 nData = length(X);
 X = [X;ones(1,nData)];
-t = target;
+t = targets;
 
 dw = zeros(size(W));
 dv = zeros(size(V));
 
 %%
 
-for k = 1:epochs
+for k = 1:1000
     [a1,z1] = forwardGeneral(W,X);
     z1 = [z1;ones(1,length(z1))];
-    [a2,z2] = forwardGeneral(V,z1);
+    [a2,z2] = forwardGeneral(V,z1); % a2 konstant??
+    % probably a bias problem ...
     
     [~,dY] = sigmoid2(a2); 
     delta2 = (z2-t).*dY;
@@ -40,6 +47,9 @@ for k = 1:epochs
 
     dw = (dw .* alpha) - (delta1 * X') .* (1-alpha);
     dv = (dv .* alpha) - (delta2 * z1') .* (1-alpha);
+    
+    
+    
     W = W + dw .* eta;
     V = V + dv .* eta;
 
@@ -48,7 +58,13 @@ for k = 1:epochs
     %rate(k) = 1-length(target(target==guess(k,:)))/length(target);
     % add tError as (W*data-targets)
 
+%     out = z2;
+%     zz = reshape(out, length(x), length(y));
+%     mesh(x,y,zz);
+%     axis([-5 5 -5 5 -0.7 0.7]);
+%     drawnow
+    
 end
 
-% Maps everything to (-7+1)/8 = -0.75 i.e. the mean
+%%
 
