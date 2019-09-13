@@ -27,8 +27,8 @@ sigma = [0.7 0.4 ;0.3 1;0.6 0.3;0.5 0.8];%; 2 6];
 datapoints = 200;
 
 
-[data1, target1] = generateData(datapoints,[mu(1,:); mu(4,:)],[sigma(1,:); sigma(4,:)],[1 1]);
-[data2, target2] = generateData(datapoints,[mu(3,:); mu(2,:)],[sigma(3,:); sigma(2,:)],[-1 -1]);
+[data1, target1] = generateData(datapoints,[mu(1,:); mu(4,:)],[sigma(1,:); sigma(4,:)],[-1 1]);
+[data2, target2] = generateData(datapoints,[mu(3,:); mu(2,:)],[sigma(3,:); sigma(2,:)],[-1 1]);
 
 data = [data1; data2];
 target = [target1; target2];
@@ -202,7 +202,7 @@ for k = 1:epochs
     hold on
     scatter(X_train(1,find(t_train-1)),X_train(2,find(t_train-1)));
     scatter(X_train(1,find(t_train+1)),X_train(2,find(t_train+1)));
-    scatter(X_train(1,err),X_train(2,err));
+    scatter(X_train(1,err),X_train(2,err),'kx');
     
     legend('Decision Boundary','Category 1','Catergory 2','Errors','location','northwest')
     
