@@ -4,12 +4,13 @@ if max(size((dataSize))) >= 3
     nLables = dataSize(3);
 else
     nLables = 1;
-end
 
 labeledVector = [];
 
+disp(nLables
 
 for i = 1:nLables
+    disp('hora')
     tempData = dataMatrix(:,:,i);
     label = ones(dataSize(1),1)*labels(i);
     labeledVector = [labeledVector;tempData label];

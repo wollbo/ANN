@@ -4,9 +4,9 @@ clear all
 close all
 
 %Generate Data
-mu = [1 1;4 4];%;-2 -5];
+mu = [1 2;5 7];%;-2 -5];
 sigma = [1 0.8;0.5 2];%; 2 6];
-datapoints = 100;
+datapoints = 50;
 
 [data target] = generateData(datapoints,mu,sigma,[1 -1]);
 
@@ -23,12 +23,12 @@ W = 0.01*randn(nodes,inputs+1);
 eta = 0.0001;
 outputs = 1;
 alpha = 0.9;
-epochs = 1000;
+epochs = 100;
 %%
 
 dw = zeros(size(W));
 y = zeros(size(t));
-error = zeros(1,epochs*length(X))';
+error = zeros(2,epochs*length(X))';
 
  for k = 1:epochs
      for j = 1:length(X)
@@ -42,7 +42,7 @@ error = zeros(1,epochs*length(X))';
         dw = (dw .* alpha) - (delta_o * X(:,j)') .* (1-alpha);
         W = W + dw .* eta;
         guess(k,j) = sign(hout);
-        error(k) = mean((guess(k,:)-t(j)).^2);
+        error(k,:) = mean((guess(k,:)-t(j)).^2);
         
      end
      %guess(k,:) = sign(hout)
@@ -51,5 +51,5 @@ error = zeros(1,epochs*length(X))';
  
 plot((1:epochs*length(X))/length(X),error)
 hold on
-%plot(1:epochs,error_epochs)
+plot(1:epochs,error_epochs)
 legend('Online Learning','Epoch Learning')
