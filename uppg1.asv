@@ -4,9 +4,9 @@ clear all
 close all
 
 %Generate Data
-mu = [1 6;5 7];%;-2 -5];
-sigma = [2 1;0.5 2];%; 2 6];
-datapoints = 50;
+mu = [1 1;4. 4];%;-2 -5];
+sigma = [1 1;1 1];%; 2 6];
+datapoints = 100;
 
 [data1 target1] = generateData(datapoints,mu(1,:),sigma(1,:),1);
 [data2 target2] =generateData(datapoints,mu(2,:),sigma(2,:),[-1]);
@@ -29,13 +29,13 @@ W_saved = W;
 eta = 0.0001;
 outputs = 1;
 alpha = 0.9;
-epochs = 10000;
+epochs = 1000;
 guess = zeros(epochs,length(t));
 error = zeros(epochs,1);
 %%
 % Perceptron learning rule
 for k = 1:epochs
-dW = -eta*(W*X-t)*X';
+dW = -eta*(sign(W*X)-t)*X';
 W = W+dW;
 guess(k,:) = sign(W*X);
 error(k) = mean((guess(k,:)-t).^2);
@@ -48,6 +48,7 @@ plot(error)
 % Delta learning rule
 W = W_saved;
 dw = zeros(size(W));
+error = zeros(epochs,1);
  
  for k = 1:epochs
  hin = W * X;

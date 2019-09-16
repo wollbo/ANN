@@ -4,7 +4,7 @@ clear all
 close all
 
 %Generate Data
-mu = [1 1;5 5];%;-2 -5];
+mu = [1 1;3.5 3.5];%;-2 -5];
 sigma = [1 1;1 1];%; 2 6];
 datapoints = 100;
 
