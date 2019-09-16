@@ -16,20 +16,29 @@ scatter(classB(1,:),classB(2,:))
 hold off
 
 %%
+close all
+clear all
 
 %klok implementation
-mu = [1 0.3;-1 0.3;0 -0.1];%;-2 -5];
-sigma = [0.2 0.2;0.2 0.2;0.3 0.3];%; 2 6];
+mu = [-2 -3;-4 -1.3;-1 3;1 1];%;-2 -5];
+sigma = [0.7 0.4 ;0.3 1;0.6 0.3;0.5 0.8];%; 2 6];
 %mu = [1 2;5 7];%;-2 -5];
 %sigma = [1 0.8;0.5 2];%; 2 6];
-datapoints = 101;
+datapoints = 200;
 
 
-[data1, target1] = generateData(datapoints,[mu(1,:); mu(3,:)],[sigma(1,:); sigma(3,:)]);
-[data2, target2] = generateData(datapoints,[mu(2,:); mu(3,:)],[sigma(1,:); sigma(3,:)]);
+[data1, target1] = generateData(datapoints,[mu(1,:); mu(4,:)],[sigma(1,:); sigma(4,:)],[1 1]);
+[data2, target2] = generateData(datapoints,[mu(3,:); mu(2,:)],[sigma(3,:); sigma(2,:)],[-1 -1]);
 
 data = [data1; data2];
 target = [target1; target2];
+
+%[data target] = generateData(datapoints,mu,sigma,[-1 -1 1 1]);
+
+% scatter(data1(:,1),data1(:,2));
+% hold on
+% scatter(data2(:,1),data2(:,2));
+
 %%
 dataSplit1 = data(target==1,:); % bara för viualisering
 dataSplit2 = data(target==-1,:);
@@ -51,27 +60,28 @@ hold off
 
 nodes = 1;
 inputs = 2;
-W = 0.01*randn(nodes,inputs+1);
-eta = 0.0001;
+%W = 0.011*randn(nodes,inputs+1);
+W = [1 1 0];
+eta = 0.01;
 outputs = 1;
 alpha = 0.9;
-data1 = data1'
-data2 = data2'
-target1 = target1'
-target2 = target2'
+data1 = data1';
+data2 = data2';
+target1 = target1';
+target2 = target2';
 data = [data1 data2];
 target = [target1 target2];
 
 %% Remove:
 % • random 25% from each class
 
+split_per = 0.75;
 
+data = [data1(:,1:floor(length(data1)*split_per)) data2(:,1:floor(length(data2)*split_per))];
+test_data = [data1(:,ceil(length(data1)*split_per):end) data2(:,ceil(length(data2)*split_per):end)];
 
-data = [data1(:,1:floor(length(data1)*0.75)) data2(:,1:floor(length(data2)*0.75))];
-test_data = [data1(:,ceil(length(data1)*0.75):end) data2(:,ceil(length(data2)*0.75):end)];
-
-target = [target1(1:floor(length(data1)*0.75)) target2(1:floor(length(data2)*0.75))];
-test_target = [target1(ceil(length(data1)*0.75):end) target2(ceil(length(data2)*0.75):end)];
+target = [target1(1:floor(length(data1)*split_per)) target2(1:floor(length(data2)*split_per))];
+test_target = [target1(ceil(length(data1)*split_per):end) target2(ceil(length(data2)*split_per):end)];
 
 X_train = data;
 X_test = test_data;
@@ -84,7 +94,7 @@ nData_test = length(X_test);
 X_train = [X_train;ones(1,nData_train)];
 X_test = [X_test;ones(1,nData_test)];
 
-epochs = 10000;
+epochs = 100;
 guess_train = zeros(epochs,length(t_train));
 error_train = zeros(epochs,1);
 error_test = error_train;
@@ -161,6 +171,8 @@ error_train = zeros(epochs,1);
 %% OBS testet skall även inkludera alla X-värden när man utvärderar error
 
 dw = zeros(size(W));
+x_dec = [min(X_train(1,:,:))-0.5 max(X_train(1,:,:))+0.75];
+%hold off
  
 for k = 1:epochs
     hin_train = W * X_train;
@@ -179,13 +191,42 @@ for k = 1:epochs
     %guess_test(k,:) = sign(hout_test); %For 50% Test
     
     error_train(k) = mean((guess_train(k,:)-t_train).^2);
+    err = find((guess_train(k,:)-t_train));
     %error_test(k) = mean((guess_test(k,:)-t_test).^2); %For 50% Test
 
     % add tError as (W*data-targets)
+    
+    y_dec = - (x_dec*(W(1)/W(2)) + (W(3)/W(2)));
+    plot(x_dec,y_dec,'-.k','Linewidth',2)
+    
+    hold on
+    scatter(X_train(1,find(t_train-1)),X_train(2,find(t_train-1)));
+    scatter(X_train(1,find(t_train+1)),X_train(2,find(t_train+1)));
+    scatter(X_train(1,err),X_train(2,err));
+    
+    legend('Decision Boundary','Category 1','Catergory 2','Errors','location','northwest')
+    
+    hold off
+    
+    axis([min(X_train(1,:,:))-0.5 max(X_train(1,:,:)+0.75) min(X_train(2,:,:))-0.25 max(X_train(2,:,:))+0.75])
+    %disp(error_train(k))
+    %disp(guess_train(k,:)-t_train)
+    
+    drawnow
 
 end
- 
-plot(error_train)
-hold on
-plot(error_test)
-legend('Training Error MSE','Testing Error MSE')
+
+%x_dec = min(X_train(1,:,:)):0.001:max(X_train(1,:,:));
+%y_dec = x_dec*(W(1)/W(2)) - (W(3)/W(2));
+%plot(x_dec,y_dec,'-.k','Linewidth',2)
+%legend('Category 1','Catergory 2','Decision Boundary')
+
+
+
+%plot(error_train)
+%hold on
+%plot(error_test)
+%legend('Training Error MSE','Testing Error MSE')
+
+
+
