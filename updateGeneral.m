@@ -1,4 +1,4 @@
-function weightMatrixDelta = updateGeneral(weightMatrixDelta,eta,alpha,delta,output)
+function weightMatrixDelta = updateGeneral(weightMatrixDelta,alpha,delta,output)
 
-weightMatrixDelta = -eta*((weightMatrixDelta.*alpha)-(delta*output').*(1-alpha));
+weightMatrixDelta = (weightMatrixDelta.*alpha)-(delta*output').*(1-alpha);
 end

@@ -8,9 +8,9 @@ target = data;
 nodes1 = 3;
 nodes2 = 8;
 inputs = 8;
-W = 0.01*randn(nodes1,inputs+1);
-V = 0.01*randn(nodes2,nodes1+1);
-eta = 0.01;
+W = 1*randn(nodes1,inputs+1);
+V = 1*randn(nodes2,nodes1+1);
+eta = 0.1;
 outputs = 8;
 alpha = 0.9;
 epochs = 10000;
@@ -31,12 +31,12 @@ for k = 1:epochs
     
     [~,dY] = sigmoid2(a2); 
     delta2 = (z2-t).*dY;
-    delta1 = backwardGeneral(a2,V,delta2);
+    delta1 = backwardGeneral(a1,V,delta2);
     
-    delta1 = delta1(1:end-1,:);
+    %delta1 = delta1(1:end-1,:);
 
-    dw = updateGeneral(dw,eta,alpha,delta1,X);
-    dv = updateGeneral(dv,eta,alpha,delta2,z1);
+    dw = updateGeneral(dw,alpha,delta1,X);
+    dv = updateGeneral(dv,alpha,delta2,z1);
 
     dw = (dw .* alpha) - (delta1 * X') .* (1-alpha);
     dv = (dv .* alpha) - (delta2 * z1') .* (1-alpha);
@@ -49,6 +49,3 @@ for k = 1:epochs
     % add tError as (W*data-targets)
 
 end
-
-% Maps everything to (-7+1)/8 = -0.75 i.e. the mean
-

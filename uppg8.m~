@@ -11,7 +11,7 @@ targets = reshape(z, 1, ndata);
 [xx, yy] = meshgrid (x, y);
 patterns = [reshape(xx, 1, ndata); reshape(yy, 1, ndata)];
 
-nodes1 = 5;
+nodes1 = 10;
 nodes2 = 1;
 inputs = 2;
 W = 1*rand(nodes1,inputs+1);
@@ -68,5 +68,10 @@ for k = 1:epochs
     
 end
 
+%%
+    out = z2/(2*(max(z2)));
+    zz = reshape(out, length(x), length(y));
+    mesh(x,y,zz);
+    hold on 
 %%
 mesh(x,y,z-zz);

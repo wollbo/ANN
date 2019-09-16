@@ -1,7 +1,6 @@
-%% uppg 3.2.3 function approximation
-clear all
-x=[-5:0.5:5]';
-y=[-5:0.5:5]';
+function approximation = varyNodes(nodes1,x,y)
+
+
 z=exp(-x.*x*0.1) * exp(-y.*y*0.1)' - 0.5;
 %mesh(x, y, z);
 
@@ -11,7 +10,7 @@ targets = reshape(z, 1, ndata);
 [xx, yy] = meshgrid (x, y);
 patterns = [reshape(xx, 1, ndata); reshape(yy, 1, ndata)];
 
-nodes1 = 5;
+%nodes1 = 5;
 nodes2 = 1;
 inputs = 2;
 W = 1*rand(nodes1,inputs+1);
@@ -55,12 +54,7 @@ for k = 1:epochs
     W = W + eta*dw;
     V = V + eta*dv;
 
-    %guess(k,:,:) = z2;
-    %error(k) = mean((guess(k,:)-t).^2);
-    %rate(k) = 1-length(target(target==guess(k,:)))/length(target);
-    % add tError as (W*data-targets)
-
-    out = a2;
+    out = z2;
     zz = reshape(out, length(x), length(y));
     mesh(x,y,zz);
     axis([-5 5 -5 5 -2 2]);
@@ -68,5 +62,4 @@ for k = 1:epochs
     
 end
 
-%%
-mesh(x,y,z-zz);
+approximation = zz;

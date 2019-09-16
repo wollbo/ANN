@@ -27,7 +27,7 @@ nodes1 = 10;
 nodes2 = 1;
 inputs = 2;
 W = 0.01*randn(nodes1,inputs+1);
-V = 0.01*randn(nodes2,nodes1);
+V = 0.01*randn(nodes2,nodes1+1);
 eta = 0.01;
 outputs = 1;
 alpha = 0.9;
@@ -75,14 +75,15 @@ dv = zeros(size(V));
  
 for k = 1:epochs
     [a1,z1] = forwardGeneral(W,X);
+    z1 = [z1;ones(1,length(z1))];
     [a2,z2] = forwardGeneral(V,z1);
     
     [~,dY] = sigmoid2(a2); 
     delta2 = (z2-t).*dY;
-    delta1 = backwardGeneral(a2,V,delta2);
+    delta1 = backwardGeneral(a1,V,delta2);
 
-    dw = updateGeneral(dw,eta,alpha,delta1,X);
-    dv = updateGeneral(dv,eta,alpha,delta2,z1);
+    dw = updateGeneral(dw,alpha,delta1,X);
+    dv = updateGeneral(dv,alpha,delta2,z1);
 
     dw = (dw .* alpha) - (delta1 * X') .* (1-alpha);
     dv = (dv .* alpha) - (delta2 * z1') .* (1-alpha);
