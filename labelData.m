@@ -1,6 +1,9 @@
 function [labeledVector] = labelData(dataMatrix,labels)
 dataSize = size(dataMatrix);
-nLables = dataSize(3);
+if length(size((dataSize))) == 3
+    nLables = dataSize(3);
+else
+    nLables = 1;
 
 labeledVector = [];
 

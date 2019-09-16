@@ -4,7 +4,7 @@ clear all
 close all
 
 %Generate Data
-mu = [1 1;5 7];%;-2 -5];
+mu = [1 6;5 7];%;-2 -5];
 sigma = [2 1;0.5 2];%; 2 6];
 datapoints = 50;
 
@@ -29,7 +29,7 @@ W_saved = W;
 eta = 0.0001;
 outputs = 1;
 alpha = 0.9;
-epochs = 3000;
+epochs = 10000;
 guess = zeros(epochs,length(t));
 error = zeros(epochs,1);
 %%
@@ -48,7 +48,6 @@ plot(error)
 % Delta learning rule
 W = W_saved;
 dw = zeros(size(W));
-error = zeros(epochs,1);
  
  for k = 1:epochs
  hin = W * X;

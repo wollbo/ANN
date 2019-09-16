@@ -46,8 +46,8 @@ for k = 1:epochs
     dw = updateGeneral(dw,alpha,delta1,X);
     dv = updateGeneral(dv,alpha,delta2,z1);
 
-%     dw = (dw .* alpha) - (delta1 * X') .* (1-alpha);
-%     dv = (dv .* alpha) - (delta2 * z1') .* (1-alpha);
+%      dw = (dw .* alpha) - (delta1 * X') .* (1-alpha);
+%      dv = (dv .* alpha) - (delta2 * z1') .* (1-alpha);
     
     
     
@@ -57,7 +57,7 @@ for k = 1:epochs
     out = z2;
     zz = reshape(out, length(x), length(y));
     mesh(x,y,zz);
-    axis([-5 5 -5 5 -2 2]);
+    axis([-5 5 -5 5 -1 1]);
     drawnow
     
 end
