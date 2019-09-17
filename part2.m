@@ -26,12 +26,12 @@ W = 1*rand(nodes1,inputs+1);
 V = 1*rand(nodes2,nodes1+1);
 X = [input ones(length(input),1)]';
 t = output';
-epochs = 10;
+epochs = 100;
 
 dw = zeros(size(W));
 dv = zeros(size(V));
 alpha = 0.9;
-eta = 0.1;
+eta = 0.01;
 
 %%
 for k = 1:epochs
@@ -51,5 +51,11 @@ for k = 1:epochs
     
     W = W + eta*dw;
     V = V + eta*dv;
+    
+    plot(z2)
+    hold on
+    plot(t)
+    hold off
+    drawnow
  
 end
