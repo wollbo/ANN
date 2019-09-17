@@ -4,7 +4,7 @@ clear all
 close all
 
 %Generate Data
-mu = [1 1;4 4];%;-2 -5];
+mu = [1 1;8 8];%;-2 -5];
 sigma = [1 0.8;0.5 2];%; 2 6];
 datapoints = 100;
 
@@ -23,33 +23,47 @@ W = 0.01*randn(nodes,inputs+1);
 eta = 0.0001;
 outputs = 1;
 alpha = 0.9;
-epochs = 1000;
+epochs =300;
 %%
 
 dw = zeros(size(W));
 y = zeros(size(t));
-error = zeros(1,epochs*length(X))';
+%error = zeros(epochs,length(X));
+%error_temp = 0;
 
  for k = 1:epochs
      for j = 1:length(X)
         hin = W * X(:,j);
         hout = [2 ./ (1+exp(-hin)) - 1 ];
         y(j) = hout;
- 
+        
         delta_o = (hout - t(j)) .* ((1 + hout) .* (1 - hout)) * 0.5;
         delta_o = delta_o(1:nodes, :);
  
         dw = (dw .* alpha) - (delta_o * X(:,j)') .* (1-alpha);
         W = W + dw .* eta;
-        guess(k,j) = sign(hout);
-        error(k) = mean((guess(k,:)-t(j)).^2);
         
+        guess(k,j) = sign(hout);
+        error_temp = (guess(k,1:j)-t(1:j)).^2;
+        error(k,j) = mean(error_temp);      
      end
-     %guess(k,:) = sign(hout)
      error_epochs(k) = mean((guess(k,:)-t).^2);
  end
  
+% for i = 1:length(error(:))
+%     error_OL(i) = mean(error(1:i));
+% end
+
+
+error = error';
+error = error(:);
 plot((1:epochs*length(X))/length(X),error)
+% plot((1:epochs*length(X))/length(X),error_OL)
 hold on
-%plot(1:epochs,error_epochs)
-legend('Online Learning','Epoch Learning')
+plot(1:epochs,error_epochs,'-.','linewidth',2)
+title('Learning Curves')
+xlabel('Epochs')
+ylabel('MSE')
+legend('Online Learning','Batch Learning')
+x_dec = [min(data(:,1))-0.5 max(data(:,2))+0.75];
+y_dec_delta = - (x_dec*(W(1)/W(2)) + (W(3)/W(2)));
