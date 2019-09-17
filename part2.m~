@@ -42,7 +42,6 @@ dw = zeros(size(W));
 dv = zeros(size(V));
 alpha = 0.9;
 eta = 0.01;
-T = 20; % minimal amount of epochs
 
 %%
 for k = 1:epochs
@@ -69,16 +68,14 @@ for k = 1:epochs
     hold off
     drawnow
     
-    % E
-    arly stopping test, i.e. test on validation set to detect
+    % Add early stopping test, i.e. test on validation set to detect
     % overfitting
     [b1,u1] = forwardGeneral(W,X_valid); 
     u1 = [u1;ones(1,length(u1))];
     [b2,u2] = forwardGeneral(V,u1);
     error(k) = mean((norm(b2-t_valid)).^2);
-    if (k > T && error(k)>error(k-1) && error(k)>error(k-2))
-        break % might not find global minimum but always a low value
-    end
+    if error(k)>error(k-1)
+        
  
 end
 disp('done')
