@@ -9,8 +9,8 @@ sigma = [0.2 0.2;0.2 0.2;0.3 0.3];%; 2 6];
 datapoints = 50;
 
 
-[data1, target1] = generateData(datapoints,[mu(1,:); mu(3,:)],[sigma(1,:); sigma(3,:)]);
-[data2, target2] = generateData(datapoints,[mu(2,:); mu(3,:)],[sigma(1,:); sigma(3,:)]);
+[data1, target1] = generateData(datapoints,[mu(1,:); mu(3,:)],[sigma(1,:); sigma(3,:)],[1 1]);
+[data2, target2] = generateData(datapoints,[mu(2,:); mu(3,:)],[sigma(1,:); sigma(3,:)],[-1 -1]);
 
 data = [data1; data2];
 target = [target1; target2];

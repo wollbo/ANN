@@ -3,5 +3,6 @@ function [a, z] = forwardGeneral(weightMatrix,input)
 %   Input could come from previous layer!
 a = weightMatrix*input;
 z = sigmoid2(a);
+
 end
 

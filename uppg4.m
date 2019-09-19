@@ -10,7 +10,7 @@ sigma = [1 1;2 2];%; 2 6];
 %sigma = [1 0.8;0.5 2];%; 2 6];
 datapoints = 50;
 
-[data, target] = generateData(datapoints,mu,sigma);
+[data, target] = generateData(datapoints,mu,sigma,[1 -1]);
 
 dataSplit1 = data(target==1,:);
 dataSplit2 = data(target==-1,:);

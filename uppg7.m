@@ -1,5 +1,8 @@
 %% 3.2.2 Autoencoder
 
+clear all
+close all
+
 data = -1*ones(8);
 data = data+2*eye(8);
 
@@ -49,3 +52,9 @@ for k = 1:epochs
     % add tError as (W*data-targets)
 
 end
+
+[a1,z1] = forwardGeneral(W,X);
+z1 = [z1;ones(1,length(z1))];
+[a2,z2] = forwardGeneral(V,z1);
+
+image(a2*100)
