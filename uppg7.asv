@@ -8,7 +8,7 @@ data = data+2*eye(8);
 
 target = data;
 
-nodes1 = 3;
+nodes1 = 2;
 nodes2 = 8;
 inputs = 8;
 W = 1*randn(nodes1,inputs+1);
@@ -52,15 +52,12 @@ for k = 1:epochs
     % add tError as (W*data-targets)
 
 end
-%%
-% X = -ones(size(X));
-% X(8,8) = 1;
 
+X
 
 [a1,z1] = forwardGeneral(W,X);
 z1 = [z1;ones(1,length(z1))];
 [a2,z2] = forwardGeneral(V,z1);
-a2 = (sigmoid2(a2)+1)/2;
 
 % z1 = z1(1:length(),:)
 
@@ -71,7 +68,6 @@ subplot(3,1,2)
 image((W-min(min(W)))/(max(max(W))-min(min(W)))*50)
 % colorbar
 subplot(3,1,3)
-% image((a2-min(min(a2)))/(max(max(a2))-min(min(a2)))*50)
-image(a2*50)
+image((a2-min(min(a2)))/(max(max(a2))-min(min(a2)))*50)
 % colorbar
 
