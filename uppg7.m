@@ -54,24 +54,30 @@ for k = 1:epochs
 end
 %%
 % X = -ones(size(X));
+% X = zeros(size(X));
 % X(8,8) = 1;
 
 
 [a1,z1] = forwardGeneral(W,X);
 z1 = [z1;ones(1,length(z1))];
 [a2,z2] = forwardGeneral(V,z1);
-a2 = (sigmoid2(a2)+1)/2;
+a2 = (sigmoid2(a2));
 
 % z1 = z1(1:length(),:)
 
 subplot(3,1,1)
-image((data-min(min(data)))/(max(max(data))-min(min(data)))*50)
+% sgtitle('n hidden neurons')
+imagesc((data-min(min(data)))/(max(max(data))-min(min(data))))
+title('Input data')
 % colorbar
 subplot(3,1,2)
-image((W-min(min(W)))/(max(max(W))-min(min(W)))*50)
+imagesc((W-min(min(W)))/(max(max(W))-min(min(W))))
+title('Weight Matrix')
 % colorbar
 subplot(3,1,3)
 % image((a2-min(min(a2)))/(max(max(a2))-min(min(a2)))*50)
-image(a2*50)
+imagesc((a2+1)/2)
+title('Output data')
 % colorbar
 
+MSE = mean(mean((data-a2).^2))
