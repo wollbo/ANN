@@ -17,10 +17,10 @@ end
 % x = x-1;
 
 f_mean = mean(x);
-x = x - f_mean;
+% x = x - f_mean;
 
-f_tt = abs(max(x)-min(x));
-x = 2*x/f_tt;
+f_var = sum((x-f_mean).^2)/length(x);
+x = (x-f_mean)/sqrt(f_var);
 %%
 
 t = 301:1500;
@@ -137,9 +137,9 @@ z2 = [z2;ones(1,length(z2))];
    
 [a3,z3] = forwardGeneral(V,z2);
 
-plot(a3*f_tt+f_mean)
+plot(a3*sqrt(f_var)+f_mean)
 hold on
-plot(output(test)*f_tt+f_mean)
+plot(output(test)*sqrt(f_var)+f_mean)
 
 MSE = mean((output(test)-a3').^2)
 

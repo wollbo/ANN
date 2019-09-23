@@ -20,12 +20,16 @@ end
 %normalisering - medelvärde
 
 f_mean = mean(x);
-% x = x - f_mean;
+x = x - f_mean;
 
+% f_var = abs(max(x)-min(x));
+% x = 2*x/f_var;
+
+%%
 %normalisering - varians
 
-f_var = sum((x-f_mean).^2)/length(x);
-x = (x-f_mean)/sqrt(f_var);
+f_var = sum(x.^2)/length(x);
+x = x/sqrt(f_var);
 
 %%
 %Noise
@@ -124,12 +128,12 @@ X = [input(test,:) ones(length(input(test)),1)]';
 z1 = [z1;ones(1,length(z1))];
 [a2,z2] = forwardGeneral(V,z1);
 % plot(a2*f_var+f_mean)
-plot((a2*sqrt(f_var))+sqrt(f_mean))
+plot((a2*f_var)*sqrt(f_var))
 hold on
 % plot(output(test)*f_var+f_mean)
 plot((output(test)*sqrt(f_var)+f_mean))
 
-MSE = mean((output(test)-a2').^2)
+MSE = mean((normalize(output(test))-normalize(a2')).^2)
 legend('Estimated function','Real function')
 
 
