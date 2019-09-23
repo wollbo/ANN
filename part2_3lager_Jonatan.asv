@@ -110,7 +110,7 @@ for k = 1:epochs
     
     
     
-    if ~(k > T && error(k)>error(k-1) && error(k)>error(k-2) && error(k)>error(k-3) && error(k)>error(k-4) && error(k)>error(k-5))
+    if (k > T && error(k)>error(k-1) && error(k)>error(k-2) && error(k)>error(k-3) && error(k)>error(k-4) && error(k)>error(k-5))
 %         break % might not find global minimum but always a low value
         W1_opt = W1;
         W2_opt = W2;
@@ -125,25 +125,22 @@ figure()
 [~,iMin] = min(error);
 minVec = NaN(length(error),1);
 minVec(iMin) = error(iMin);
-plot([1:n_epochs*2],error(1:n_epochs*2))
+plot(error)
 hold on
 plot(minVec, '*')
-axis([1 n_epochs*2 0 max(error(1:n_epochs*2))])
 hold off
-xlabel('Number of epochs')
-ylabel('MSE')
-legend('Error curve','Optimal weights')
+
 figure()
 
 X = [input(test,:) ones(length(input(test)),1)]';
 
-[a1,z1] = forwardGeneral(W1_opt,X); 
+[a1,z1] = forwardGeneral(W1,X); 
 z1 = [z1;ones(1,length(z1))];
     
-[a2,z2] = forwardGeneral(W2_opt,z1); 
+[a2,z2] = forwardGeneral(W2,z1); 
 z2 = [z2;ones(1,length(z2))];
    
-[a3,z3] = forwardGeneral(V_opt,z2);
+[a3,z3] = forwardGeneral(V,z2);
 
 plot(a3*sqrt(f_var)+f_mean)
 hold on

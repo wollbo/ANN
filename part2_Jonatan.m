@@ -29,7 +29,7 @@ x = (x-f_mean)/sqrt(f_var);
 
 %%
 %Noise
-% noise = randn(length(x),1)/100;
+% noise = randn(length(x),1)*0.01;
 % x = x + noise;
 
 
@@ -66,6 +66,7 @@ dv = zeros(size(V));
 alpha = 0.9;
 eta = 0.0001;
 T = 2; % minimal amount of epochs
+n_epochs = 0;
 
 
 
@@ -73,10 +74,12 @@ T = 2; % minimal amount of epochs
 for k = 1:epochs
     [a1,z1] = forwardGeneral(W,X); 
     z1 = [z1;ones(1,length(z1))];
-    [a2,z2] = forwardGeneral(V,z1 + randn(length(z1),6)'*0);
+%     [a2,z2] = forwardGeneral(V,z1);
+    [a2,z2] = forwardGeneral(V,z1 + randn(length(z1),6)'*0.01);
     
 %     [~,dY] = sigmoid2(a2);
     dY = a2;
+
     delta2 = (z2-t).*dY;
     delta1 = backwardGeneral(a1,V,delta2);
 
@@ -101,8 +104,10 @@ for k = 1:epochs
     u1 = [u1;ones(1,length(u1))];
     [b2,u2] = forwardGeneral(V,u1);
     error(k) = mean((norm(b2-t_valid)).^2);
-    if (k > T && error(k)>error(k-1) && error(k)>error(k-2) && error(k)>error(k-3) && error(k)>error(k-4) && error(k)>error(k-5))
-        break % might not find global minimum but always a low value
+    if ~(k > T && error(k)>error(k-1) && error(k)>error(k-2) && error(k)>error(k-3) && error(k)>error(k-4) && error(k)>error(k-5))
+        W_opt = W;
+        V_opt = V;
+        n_epochs = n_epochs + 1;
     end
  
 end
@@ -112,22 +117,27 @@ figure()
 [~,iMin] = min(error);
 minVec = NaN(length(error),1);
 minVec(iMin) = error(iMin);
-plot(error)
+plot([1:n_epochs*2],error(1:n_epochs*2))
 hold on
 plot(minVec, '*')
+axis([1 n_epochs*2 0 max(error(1:n_epochs*2))])
 hold off
+xlabel('Number of epochs')
+ylabel('MSE')
+legend('Error curve','Optimal weights')
 
 figure()
 
 X = [input(test,:) ones(length(input(test)),1)]';
-[a1,z1] = forwardGeneral(W,X); 
+[a1,z1] = forwardGeneral(W_opt,X); 
 z1 = [z1;ones(1,length(z1))];
-[a2,z2] = forwardGeneral(V,z1);
+[a2,z2] = forwardGeneral(V_opt,z1);
 % plot(a2*f_var+f_mean)
 plot((a2*sqrt(f_var))+sqrt(f_mean))
 hold on
 % plot(output(test)*f_var+f_mean)
 plot((output(test)*sqrt(f_var)+f_mean))
+xlabel('t')
 
 MSE = mean((output(test)-a2').^2)
 legend('Estimated function','Real function')
