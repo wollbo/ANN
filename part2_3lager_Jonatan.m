@@ -14,14 +14,8 @@ for i = tau+1:N-1
     x(i+1) = x(i)+beta*x(i-tau)/(1+x(i-tau).^n)-gamma*x(i);
 end
 
-% x = x-1;
 
-f_mean = mean(x);
-% x = x - f_mean;
 
-f_var = sum((x-f_mean).^2)/length(x);
-x = (x-f_mean)/sqrt(f_var);
-%%
 
 t = 301:1500;
 train = 1:900;
@@ -31,22 +25,29 @@ test = 1001:length(t);
 
 input = [x(t-20) x(t-15) x(t-10) x(t-5) x(t)];
 output = x(t+5);
+%%
+% Scaling of data
+f_mean = mean(x);
+% x = x - f_mean;
+
+f_var = sum((x-f_mean).^2)/length(x);
+x = (x-f_mean)/sqrt(f_var);
 
 % can be accessed trough input(train,:), input(valid,:), input(test,:)
 
 
-%% two layer network
+%% three layer network
 
-nodes1 = 3;
+nodes1 = 5;
 nodes2 = 8;
 nodesOut = 1;
 inputs = 5;
-W1 = 1*rand(nodes1,inputs+1);
-W2 = 1*rand(nodes2,nodes1+1);
+W1 = 0.1*rand(nodes1,inputs+1);
+W2 = 0.1*rand(nodes2,nodes1+1);
 V = 1*rand(nodesOut,nodes2+1);
 X = [input(train,:) ones(length(input(train)),1)]';
 t = output(train)';
-epochs = 1500;
+epochs = 1000;
 X_valid = [input(valid,:) ones(length(input(valid)),1)]';
 t_valid = output(valid)';
 
@@ -54,7 +55,7 @@ dw1 = zeros(size(W1));
 dw2 = zeros(size(W2));
 dv = zeros(size(V));
 alpha = 0.9;
-eta = 0.00005;
+eta = 0.001;
 T = 20; % minimal amount of epochs
 n_epochs = 0;
 
@@ -63,23 +64,25 @@ for k = 1:epochs
     [a1,z1] = forwardGeneral(W1,X); 
     z1 = [z1;ones(1,length(z1))];
     
-    [a2,z2] = forwardGeneral(W2,z1); 
+    [a2,z2] = forwardGeneral(W2,z1);
+%     [a2,z2] = forwardGeneral(W2,z1+ randn(length(z1),nodes1+1)'*0.001); 
     z2 = [z2;ones(1,length(z2))];
     
     [a3,z3] = forwardGeneral(V,z2);
+%     [a3,z3] = forwardGeneral(V,z2 + randn(length(z2),nodes2+1)'*0.001);
     
 %     [~,dY] = sigmoid2(a3);
     dY = a3;
     
     
     
-    delta3 = (z3-t).*dY;
+    delta3 = (a3-t).*dY;
     delta2 = backwardGeneral(a2,V,delta3);
     delta1 = backwardGeneral(a1,W2,delta2);
 
-    dw1 = updateGeneral(dw1,alpha,delta1,X);
-    dw2 = updateGeneral(dw2,alpha,delta2,z1);
-    dv = updateGeneral(dv,alpha,delta3,z2);
+%     dw1 = updateGeneral(dw1,alpha,delta1,X);
+%     dw2 = updateGeneral(dw2,alpha,delta2,z1);
+%     dv = updateGeneral(dv,alpha,delta3,z2);
 
     dw1 = (dw1 .* alpha) - (delta1 * X') .* (1-alpha);
     dw2 = (dw2 .* alpha) - (delta2 * z1') .* (1-alpha);
@@ -89,11 +92,11 @@ for k = 1:epochs
     W2 = W2 + eta*dw2;
     V = V + eta*dv;
     
-    plot(z3)
-    hold on
-    plot(t)
-    hold off
-    drawnow
+%     plot(a3)
+%     hold on
+%     plot(t)
+%     hold off
+%     drawnow
     
  
     
@@ -106,11 +109,12 @@ for k = 1:epochs
     [b2,u2] = forwardGeneral(W2,u1);
     u2 = [u2;ones(1,length(u2))];
     [b3,u3] = forwardGeneral(V,u2);
-    error(k) = mean((norm(b3-t_valid)).^2);
+    error_valid(k) = mean(((b3-t_valid)).^2);
+    error_train(k) = mean(((a3-t)).^2);
     
     
     
-    if ~(k > T && error(k)>error(k-1) && error(k)>error(k-2) && error(k)>error(k-3) && error(k)>error(k-4) && error(k)>error(k-5))
+    if ~(k > T && error_valid(k)>error_valid(k-1) && error_valid(k)>error_valid(k-2) && error_valid(k)>error_valid(k-3) && error_valid(k)>error_valid(k-4) && error_valid(k)>error_valid(k-5))
 %         break % might not find global minimum but always a low value
         W1_opt = W1;
         W2_opt = W2;
@@ -122,13 +126,15 @@ end
 disp('done')
 %%
 figure()
-[~,iMin] = min(error);
-minVec = NaN(length(error),1);
-minVec(iMin) = error(iMin);
-plot([1:n_epochs*2],error(1:n_epochs*2))
+n_graph = min(n_epochs*5,length(error_valid));
+[~,iMin] = min(error_valid);
+minVec = NaN(length(error_valid),1);
+minVec(iMin) = error_valid(iMin);
+semilogy([1:n_graph],error_train(1:n_graph));
 hold on
+semilogy([1:n_graph],error_valid(1:n_graph));
 plot(minVec, '*')
-axis([1 n_epochs*2 0 max(error(1:n_epochs*2))])
+axis([1 n_graph 0 max(max(error_valid(1:n_graph)),max(error_train(1:n_graph)))])
 hold off
 xlabel('Number of epochs')
 ylabel('MSE')
@@ -145,9 +151,9 @@ z2 = [z2;ones(1,length(z2))];
    
 [a3,z3] = forwardGeneral(V_opt,z2);
 
-plot(a3*sqrt(f_var)+f_mean)
+plot(a3)
 hold on
-plot(output(test)*sqrt(f_var)+f_mean)
+plot(output(test))
 
 MSE = mean((output(test)-a3').^2)
 

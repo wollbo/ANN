@@ -4,6 +4,7 @@ function delta = backwardGeneral(activation,weightMatrix,delta)
 [~,dPhi] = sigmoid2(activation);
 
 delta = (weightMatrix'*delta);
+% delta = delta(1:end-1,:).*dPhi.*(1-dPhi);
 delta = delta(1:end-1,:).*dPhi;
 
 
