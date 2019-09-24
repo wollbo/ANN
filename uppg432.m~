@@ -13,8 +13,6 @@ x(tau) = 1.5;
 for i = tau+1:N-1
     x(i+1) = x(i)+beta*x(i-tau)/(1+x(i-tau).^n)-gamma*x(i);
 end
-sigma = 0.03; % add noise
-x = x + sigma*randn(size(x));
 
 
 %%
@@ -25,7 +23,9 @@ valid = 901:1000;
 test = 1001:length(t);
 
 
-input = [x(t-20) x(t-15) x(t-10) x(t-5) x(t)]; 
+input = [x(t-20) x(t-15) x(t-10) x(t-5) x(t)];
+sigma = 0.03;
+input = input + sigma*randn(size(input)); % add noise
 output = x(t+5);
 
 
@@ -40,11 +40,12 @@ inputs = 5;
 epochs = 1500;
 X_valid = [input(valid,:) ones(length(input(valid)),1)]';
 t_valid = output(valid)';
-lambda = 10e-4; % ger inte bättre prestanda än lambda = 0 : kolla om weight decay är rätt
+lambda = 10e-4;
+lambda = 0;
 
 
 alpha = 0.9;
-eta = 5*10e-4; % på gränsen, konvergerar ej för eta = 10e-3. learning rate verkar vara avgörande faktor för prestanda
+eta = 2*10e-4;
 T = 20; % minimal amount of epochs
 
 %%
@@ -91,16 +92,12 @@ for k = 1:epochs
     W2 = W2 + eta*dw2;
     V = V + eta*dv;
     
-    error_train(k) = mean(((a3-t)).^2);
-    
     [b1,u1] = forwardGeneral(W1,X_valid); 
     u1 = [u1;ones(1,length(u1))];
     [b2,u2] = forwardGeneral(W2,u1);
     u2 = [u2;ones(1,length(u2))];
     [b3,u3] = forwardGeneral(V,u2);
     error_valid(k) = mean((b3-t_valid).^2);
-    
-    
     
     if ~(k > T && error_valid(k)>error_valid(k-1) && error_valid(k)>error_valid(k-2) && error_valid(k)>error_valid(k-3) && error_valid(k)>error_valid(k-4) && error_valid(k)>error_valid(k-5))
         %break % might not find global minimum but always a low value
@@ -120,23 +117,15 @@ z2 = [z2;ones(1,length(z2))];
 MSE(m) = mean(((output(test)-a3').^2));
 end
 disp('done')
-mm = mean(MSE);
-mvar = var(MSE);
 %%
-n_graph = min(n_epochs*5,length(error_valid));
-
+figure()
 [~,iMin] = min(error_valid);
 minVec = NaN(length(error_valid),1);
 minVec(iMin) = error_valid(iMin);
-plot([1:n_graph],error_train(1:n_graph))
+plot(error_valid)
 hold on
-plot([1:n_graph],error_valid(1:n_graph))
 plot(minVec, '*')
-axis([1 n_graph 0 max(max(error_valid(1:n_graph)),max(error_train(1:n_graph)))])
 hold off
-xlabel('Number of epochs')
-ylabel('MSE')
-legend('Error on training set','Error on validation set','Optimal weights')
 
 f2=figure('Name','figures/uppg432sigma018')
 

@@ -13,7 +13,8 @@ x(tau) = 1.5;
 for i = tau+1:N-1
     x(i+1) = x(i)+beta*x(i-tau)/(1+x(i-tau).^n)-gamma*x(i);
 end
-
+sigma = 0.03; % add noise
+x=x+sigma*randn(size(x));
 
 % % x = normalize(x)
 % %normalisering - medelvärde
@@ -41,21 +42,7 @@ test = 1001:length(t);
 
 input = [x(t-20) x(t-15) x(t-10) x(t-5) x(t)];
 output = x(t+5);
-%%
-% Scaling of variables
-%normalisering - medelvärde
 
-f_mean = mean(x);
-% x = x - f_mean;
-
-%normalisering - varians
-
-f_var = sum((x-f_mean).^2)/length(x);
-x = (x-f_mean)/sqrt(f_var);
-
-%Noise
-% noise = randn(length(x),1)*0.01;
-% x = x + noise;
 
 % can be accessed trough input(train,:), input(valid,:), input(test,:)
 
@@ -68,9 +55,9 @@ inputs = 5;
 epochs = 1000;
 X_valid = [input(valid,:) ones(length(input(valid)),1)]';
 t_valid = output(valid)';
-lambda = 1e-2;
+lambda = 1e-4;
 alpha = 0.9;
-eta = 0.001;
+eta = 1e-2; % eta = 1e-2 verkar vara maximal learning rate, ger bäst MSE
 T = 20; % minimal amount of epochs
 n_epochs = 0;
 
@@ -147,6 +134,8 @@ MSE(m) = mean(((output(test)-a2').^2));
 end
 
 disp('done')
+mm = mean(MSE);
+mvar = var(MSE);
 %%
 
 lam = num2str(lambda);
