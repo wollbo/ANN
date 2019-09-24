@@ -68,7 +68,7 @@ inputs = 5;
 epochs = 1000;
 X_valid = [input(valid,:) ones(length(input(valid)),1)]';
 t_valid = output(valid)';
-lambda = 1e-2;
+lambda = 1e-1;
 alpha = 0.9;
 eta = 0.001;
 T = 20; % minimal amount of epochs
@@ -169,7 +169,7 @@ ylabel('MSE')
 legend('Error on training set','Error on validation set','Optimal weights')
 title([char('lambda = ') num2str(lambda) ', ' char('nHidden = ') num2str(nodes1)]);
 
-f2 = figure('Name', ['figures/Estimation2Layer' char('lambda=') char('nHidden=') num2str(nodes1)])
+f2 = figure('Name', ['figures/Estimation2Layer' char('lambda=') lam char('nHidden=') num2str(nodes1)])
 
 X = [input(test,:) ones(length(input(test)),1)]';
 [a1,z1] = forwardGeneral(W_opt,X); 
