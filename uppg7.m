@@ -8,7 +8,7 @@ data = data+2*eye(8);
 
 target = data;
 
-nodes1 = 3;
+nodes1 = 4;
 nodes2 = 8;
 inputs = 8;
 W = 1*randn(nodes1,inputs+1);
@@ -56,7 +56,7 @@ end
 % X = -ones(size(X));
 % X = zeros(size(X));
 % X(8,8) = 1;
-
+ f = figure('Name','figures/uppgEncoder4');
 
 [a1,z1] = forwardGeneral(W,X);
 z1 = [z1;ones(1,length(z1))];

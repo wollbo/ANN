@@ -27,27 +27,29 @@ input = [x(t-20) x(t-15) x(t-10) x(t-5) x(t)];
 output = x(t+5);
 %%
 % Scaling of data
-f_mean = mean(x);
+% f_mean = mean(x);
 % x = x - f_mean;
 
-f_var = sum((x-f_mean).^2)/length(x);
-x = (x-f_mean)/sqrt(f_var);
+% f_var = sum((x-f_mean).^2)/length(x);
+% x = (x-f_mean)/sqrt(f_var);
+
+% x = x + randn(length(x),1)*0.5+10
 
 % can be accessed trough input(train,:), input(valid,:), input(test,:)
 
 
 %% three layer network
 
-nodes1 = 5;
+nodes1 = 8;
 nodes2 = 8;
 nodesOut = 1;
 inputs = 5;
 W1 = 0.1*rand(nodes1,inputs+1);
 W2 = 0.1*rand(nodes2,nodes1+1);
-V = 1*rand(nodesOut,nodes2+1);
+V = 0.1*rand(nodesOut,nodes2+1);
 X = [input(train,:) ones(length(input(train)),1)]';
 t = output(train)';
-epochs = 1000;
+epochs = 100000;
 X_valid = [input(valid,:) ones(length(input(valid)),1)]';
 t_valid = output(valid)';
 
@@ -55,7 +57,7 @@ dw1 = zeros(size(W1));
 dw2 = zeros(size(W2));
 dv = zeros(size(V));
 alpha = 0.9;
-eta = 0.001;
+eta = 0.0001;
 T = 20; % minimal amount of epochs
 n_epochs = 0;
 
@@ -72,7 +74,7 @@ for k = 1:epochs
 %     [a3,z3] = forwardGeneral(V,z2 + randn(length(z2),nodes2+1)'*0.001);
     
 %     [~,dY] = sigmoid2(a3);
-    dY = a3;
+    dY = 1;
     
     
     
@@ -138,7 +140,7 @@ axis([1 n_graph 0 max(max(error_valid(1:n_graph)),max(error_train(1:n_graph)))])
 hold off
 xlabel('Number of epochs')
 ylabel('MSE')
-legend('Error curve','Optimal weights')
+legend('Error curve - Training','Error curve - Validation','Optimal weights')
 figure()
 
 X = [input(test,:) ones(length(input(test)),1)]';
@@ -157,4 +159,5 @@ plot(output(test))
 
 MSE = mean((output(test)-a3').^2)
 
+xlabel('t')
 legend('Estimated function','Real function')

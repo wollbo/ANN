@@ -1,0 +1,28 @@
+
+3:
+MSE =
+
+   4.9140e-04
+
+>> printToPdf(f)
+>> uppg7
+2:
+MSE =
+
+    0.0067
+
+>> printToPdf(f)
+>> uppg7
+1:
+MSE =
+
+    0.2997
+
+>> printToPdf(f)
+>> uppg7
+4:
+MSE =
+
+   1.2035e-04
+
+>> printToPdf(f)

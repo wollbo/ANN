@@ -79,7 +79,7 @@ for k = 1:epochs
     [a2,z2] = forwardGeneral(V,z1);
     
     [~,dY] = sigmoid2(a2); 
-    delta2 = (z2-t).*dY;
+    delta2 = (a2-t).*dY;
     delta1 = backwardGeneral(a1,V,delta2);
 
     dw = updateGeneral(dw,alpha,delta1,X);

@@ -15,24 +15,6 @@ for i = tau+1:N-1
 end
 
 
-% % x = normalize(x)
-% %normalisering - medelvärde
-% 
-% f_mean = mean(x);
-% % x = x - f_mean;
-% 
-% %normalisering - varians
-% 
-% f_var = sum((x-f_mean).^2)/length(x);
-% x = (x-f_mean)/sqrt(f_var);
-% 
-% %Noise
-% % noise = randn(length(x),1)*0.01;
-% % x = x + noise;
-
-
-
-
 t = 301:1500;
 train = 1:900;
 valid = 901:1000;
@@ -41,23 +23,18 @@ test = 1001:length(t);
 
 input = [x(t-20) x(t-15) x(t-10) x(t-5) x(t)];
 output = x(t+5);
+
+
+
 %%
 % Scaling of variables
 %normalisering - medelvärde
 
-f_mean = mean(x);
-% x = x - f_mean;
+% f_mean = mean(x);
+% 
+% f_var = sum((x-f_mean).^2)/length(x);
+% x = (x-f_mean)/sqrt(f_var);
 
-%normalisering - varians
-
-f_var = sum((x-f_mean).^2)/length(x);
-x = (x-f_mean)/sqrt(f_var);
-
-%Noise
-% noise = randn(length(x),1)*0.01;
-% x = x + noise;
-
-% can be accessed trough input(train,:), input(valid,:), input(test,:)
 
 
 %% two layer network
@@ -69,14 +46,17 @@ W = 0.1*rand(nodes1,inputs+1);
 V = 0.1*rand(nodes2,nodes1+1);
 X = [input(train,:) ones(length(input(train)),1)]';
 t = output(train)';
-epochs = 1000;
+epochs = 500000;
 X_valid = [input(valid,:) ones(length(input(valid)),1)]';
 t_valid = output(valid)';
+
+X_test = [input(test,:) ones(length(input(test)),1)]';
+t_test = output(test)';
 
 dw = zeros(size(W));
 dv = zeros(size(V));
 alpha = 0.9;
-eta = 0.001;
+eta = 0.0001;
 T = 20; % minimal amount of epochs
 n_epochs = 0;
 
@@ -86,11 +66,13 @@ n_epochs = 0;
 for k = 1:epochs
     [a1,z1] = forwardGeneral(W,X); 
     z1 = [z1;ones(1,length(z1))];
-%     [a2,z2] = forwardGeneral(V,z1);
-    [a2,z2] = forwardGeneral(V,z1 + randn(length(z1),nodes2)'*0.001);
+    [a2,z2] = forwardGeneral(V,z1);
+%     [a2,z2] = forwardGeneral(V,z1 + randn(length(z1),nodes2)'*0.001);
     
 %     [~,dY] = sigmoid2(a2);
-    dY = a2;
+%     dY = a2;
+    dY = 1;
+    
 
     delta2 = (a2-t).*dY;
     delta1 = backwardGeneral(a1,V,delta2);
@@ -154,19 +136,20 @@ legend('Error on training set','Error on validation set','Optimal weights')
 
 figure()
 
-X = [input(test,:) ones(length(input(test)),1)]';
-[a1,z1] = forwardGeneral(W_opt,X); 
+% X = [input(test,:) ones(length(input(test)),1)]';
+[a1,z1] = forwardGeneral(W_opt,X_test); 
 z1 = [z1;ones(1,length(z1))];
 [a2,z2] = forwardGeneral(V_opt,z1);
 % plot(a2*f_var+f_mean)
 plot(a2)
 hold on
 % plot(output(test)*f_var+f_mean)
-plot((output(test)))
+plot(t_test)
 xlabel('t')
 
-MSE = mean(((output(test)-a2').^2))
+MSE = mean((t_test-a2).^2)
 legend('Estimated function','Real function')
+
 
 
 

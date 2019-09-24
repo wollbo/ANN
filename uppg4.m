@@ -49,6 +49,7 @@ end
 plot(error)
 
 [~,I] = min(error)
+hold on
 bestGuess = guess(I,:);
 %% Delta learning
 

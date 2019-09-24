@@ -173,6 +173,7 @@ error_train = zeros(epochs,1);
 dw = zeros(size(W));
 x_dec = [min(X_train(1,:,:))-0.5 max(X_train(1,:,:))+0.75];
 %hold off
+f = figure('Name','figures/uppgNonSep');
  
 for k = 1:epochs
     hin_train = W * X_train;
@@ -184,7 +185,7 @@ for k = 1:epochs
     delta_o = (hout_train - t_train) .* ((1 + hout_train) .* (1 - hout_train)) * 0.5;
     delta_o = delta_o(1:nodes, :);
 
-    dw = (dw .* alpha) - (delta_o * X_train') .* (1-alpha);
+    dw = (dw .* alpha) - (delta_o * X_train') .* (1-alpha); 
     W = W + dw .* eta;
 
     guess_train(k,:) = sign(hout_train);

@@ -54,6 +54,7 @@ y = zeros(size(t));
 %     error_OL(i) = mean(error(1:i));
 % end
 
+f1 = figure('Name','figures/uppgbatchonline')
 
 error = error';
 error = error(:);
