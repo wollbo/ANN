@@ -16,7 +16,7 @@ patterns = [reshape(xx, 1, ndata); reshape(yy, 1, ndata)];
 % add nSamp
 
 
-nodes1 = 25;
+
 nodes2 = 1;
 inputs = 2; 
 eta = 0.001;
@@ -34,17 +34,24 @@ X = [X;ones(1,nData)];
 t = targets;
 M = 100;
 
+% 0.0034
+% 0.0052
+% 0.0155
+% 0.0468
+% 0.0676
+
 
 %%
 for m = 1:100
-for l = 0:4
-nSamp = 1-0.2*l; %0.8 to 0.2
-perm = randperm(round(length(targets)));
-perm = perm(1:round(nSamp*length(perm)));
-sX = X(:,perm);
-st = t(perm);
-%sX = X;
-%st = t;
+for l = 1:25 % 0:4
+nodes1 = l;
+%nSamp = 1-0.2*l; %0.8 to 0.2
+%perm = randperm(round(length(targets)));
+%perm = perm(1:round(nSamp*length(perm)));
+%sX = X(:,perm);
+%st = t(perm);
+sX = X;
+st = t;
 W = 0.1*rand(nodes1,inputs+1);
 V = 0.1*rand(nodes2,nodes1+1);
 dw = zeros(size(W));
@@ -80,10 +87,12 @@ z1 = [z1;ones(1,length(z1))];
 [a2,z2] = forwardGeneral(V,z1);
 out = a2;
 zz = reshape(out, length(x), length(y));
-MSE(l+1,m) = mean(mean((z-zz).^2));
+MSE(l,m) = mean(mean((z-zz).^2)); %MSE(l+1,m)
 %merror = 1-error/max(error);
 end
 end
+[~,I] = min(mean(MSE,2));
+
 
 %%
 f1 = figure('Name','figures/functionApproximation')
