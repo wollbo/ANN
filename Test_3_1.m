@@ -3,12 +3,12 @@
 clear all
 close all
 
-x_input = 0:0.1:pi;
-f_sin = sin(x_input);
+x_input = 0:0.1:2*pi;
+f_sin = min(0.5,abs(sin(x_input)));
 f_square = sign(f_sin);
 
 n_nodes = 100;
-epochs = 100;
+epochs = 50;
 eta = 0.005;
 
 w_r = 0.1 *randn(1,n_nodes)';
@@ -16,8 +16,8 @@ w_s = 0.1 *randn(1,n_nodes)';
 
 % mu_r = zeros(1,n_nodes)';
 % mu_s = zeros(1,n_nodes)';
-mu_r = linspace(0,pi,n_nodes)'; 
-mu_s = linspace(0,pi,n_nodes)';
+mu_r = linspace(0,2*pi,n_nodes)'; 
+mu_s = linspace(0,2*pi,n_nodes)';
 
 sigma_r = ones(1,n_nodes)';
 sigma_s = ones(1,n_nodes)';
@@ -30,8 +30,11 @@ for k = 1:epochs
 output_r = sum(w_r.*rbf_nodes_r);
 output_s = sum(w_s.*rbf_nodes_s);
 
-e_r = 0.5*(output_r - f_square).^2;
-e_s = 0.5*(output_s - f_sin).^2;
+ksi_r = 0.5*(output_r - f_square).^2;
+ksi_s_squared = 0.5*(output_s - f_sin).^2;
+
+e_r = (f_square - output_r);
+e_s = (f_sin - output_s);
 
 delta_r = eta*e_r.*rbf_nodes_r;
 delta_s = eta*e_s.*rbf_nodes_s;
