@@ -5,11 +5,16 @@ close all
 
 x_input = 0:0.1:2*pi;
 x_test = 6:5:61;
-f_sin = (sin(x_input));
-f_square = sign(f_sin);
 
-n_nodes = 100;
-epochs = 50;
+f_sin = (sin(2*x_input));
+f_square = sign(2*f_sin);
+
+%With added noise
+% f_sin = (sin(2*x_input))+ randn(1,length(x_input))*0.05;
+% f_square = sign(2*f_sin)+ randn(1,length(x_input))*0.05;
+
+n_nodes = 50;
+epochs = 100;
 eta = 0.005;
 holdout = 5;
 
@@ -26,6 +31,9 @@ sigma_s = ones(1,n_nodes)'*1;
 
 rbf_nodes_r = exp(-(x_input-mu_r).^2./(2*sigma_r));
 rbf_nodes_s = exp(-(x_input-mu_s).^2./(2*sigma_s));
+
+residual_r = [];
+residual_s = [];
 
 for k = 1:epochs
 
@@ -51,13 +59,17 @@ diff_s = mean((output_s - f_sin).^2);
 output_r_update = sum(w_r.*rbf_nodes_r);
 output_s_update = sum(w_s.*rbf_nodes_s);
 
+residual_r = [residual_r,mean(abs(output_r_update(x_test) - f_square(x_test)))];
+residual_s = [residual_s,mean(abs(output_s_update(x_test) - f_sin(x_test)))];
+
 % plot(x_input,output_r_update)
 % hold on
 % plot(x_input,f_square)
 % hold off
-% 
 % drawnow
-% pause(0.1)
+% 
+% pause(0.2)
+
 end
 
 plot(x_input,output_r)
@@ -69,5 +81,5 @@ plot(x_input,output_s)
 hold on
 plot(x_input,f_sin)
 
-residual_r = mean(abs(output_r_update(x_test) - f_square(x_test)))
-residual_s = mean(abs(output_s_update(x_test) - f_sin(x_test)))
+residual_r_step = mean(abs(sign(output_r_update(x_test)) - f_square(x_test)))
+% residual_s = mean(abs(output_s_update(x_test) - f_sin(x_test)))
