@@ -36,38 +36,38 @@ residual_r = [];
 residual_s = [];
 
 for k = 1:epochs
-output_r = sum(w_r'.*rbf_nodes_r);
-output_s = sum(w_s'.*rbf_nodes_s);
+    output_r = sum(w_r'.*rbf_nodes_r);
+    output_s = sum(w_s'.*rbf_nodes_s);
 
-ksi_r = 0.5*(output_r - f_square).^2;
-ksi_s = 0.5*(output_s - f_sin).^2;
-    
-e_r = (f_square - output_r);
-e_s = (f_sin - output_s);
+    ksi_r = 0.5*(output_r - f_square).^2;
+    ksi_s = 0.5*(output_s - f_sin).^2;
 
-delta_r = eta*e_r*rbf_nodes_r';
-delta_s = eta*e_s*rbf_nodes_s';
+    e_r = (f_square - output_r);
+    e_s = (f_sin - output_s);
 
-w_r = w_r + delta_r;
-w_s = w_s + delta_s;
- 
+    delta_r = eta*e_r*rbf_nodes_r';
+    delta_s = eta*e_s*rbf_nodes_s';
 
-diff_r = mean((output_r - f_square).^2);
-diff_s = mean((output_s - f_sin).^2);
+    w_r = w_r + delta_r;
+    w_s = w_s + delta_s;
 
-output_r_update = (w_r*rbf_nodes_r);
-output_s_update = (w_s*rbf_nodes_s);
 
-% residual_r = [residual_r,mean(abs(output_r_update(x_test) - f_square(x_test)))];
-% residual_s = [residual_s,mean(abs(output_s_update(x_test) - f_sin(x_test)))];
+    diff_r = mean((output_r - f_square).^2);
+    diff_s = mean((output_s - f_sin).^2);
 
-% plot(x_input,output_r_update)
-% hold on
-% plot(x_input,f_square)
-% hold off
-% drawnow
-% 
-% pause(0.2)
+    output_r_update = (w_r*rbf_nodes_r);
+    output_s_update = (w_s*rbf_nodes_s);
+
+    % residual_r = [residual_r,mean(abs(output_r_update(x_test) - f_square(x_test)))];
+    % residual_s = [residual_s,mean(abs(output_s_update(x_test) - f_sin(x_test)))];
+
+    % plot(x_input,output_r_update)
+    % hold on
+    % plot(x_input,f_square)
+    % hold off
+    % drawnow
+    % 
+    % pause(0.2)
 
 end
 %%
