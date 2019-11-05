@@ -40,7 +40,7 @@ for i = 1:epochs
 end
 
 for k = 1:size(animal_data,1)
-   [distance(k) index(k)] = min(sum(abs(((animal_data(k,:) - w).^2)),2));
+   [distance(k) index(k)] = min(sum(abs(((animal_data(k,:) - w))),2));
 end
 
 
