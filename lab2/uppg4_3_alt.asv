@@ -14,9 +14,8 @@ max_neighbour = 2;
 epochs = 500;
 w = randi([2],100,31)/2;
 eta = 0.2;
-sigma_start = 1.5;
-sigma_end = 1.2;
-tau = epochs;
+sigma_start = 0.75;
+tau = epochs*1000;
 % w = rand(100,31)
 
 for i = 1:epochs
@@ -42,9 +41,9 @@ for i = 1:epochs
 %         if isempty(update_index)
 %            update_index = index; 
 %         end
-        
+        %%
         distance = [];
-%         index = 1;
+        index = 50
         
         for l = 1:length(w)
 %            distance(l)  = max(abs((mod(index,10)-mod(l,10)),...
@@ -53,11 +52,11 @@ for i = 1:epochs
 %            distance(l)  = max(abs((mod(index-l,10))),...
 %                abs(((index - mod(index,10))/10)-((l - mod(l,10))/10)));
 
-            distance(l)  = max(abs((mod(abs(index-1),10)-mod(abs(l-1),10))),...
-               abs(((index - mod(index,10))/10)-((l+1 - mod(l+1,10))/10)));
+            distance(l)  = max(abs((mod(index,10)-mod(l,10))),...
+               abs(((index - mod(index,10))/10)-((l - mod(l,10))/10)));
         end
-%         reshape(distance,[10 10])'
-        
+        reshape(distance,[10 10])'
+        %%
 %         for l = 1:length(update_index)
 %            distance(l)  = abs((mod(index,10)-mod(update_index(l),10)))+...
 %                abs(((index - mod(index,10))/10)-((update_index(l) - mod(update_index(l),10))/10));
@@ -86,12 +85,12 @@ for i = 1:epochs
    w_logg2(i) = w(1,2);
    w_logg3(i) = w(50,1);
    w_logg4(i) = w(50,2);
-    imagesc(reshape((sum(w,2)),[10 10])')
-    colorbar
-    drawnow
+%     imagesc(reshape((sum(w,2)),[10 10])')
+%     colorbar
+%     drawnow
     sigma
 end
-
+%%
 % Coding: 0=no party, 1='m', 2='fp', 3='s', 4='v', 5='mp', 6='kd', 7='c'
 % Use some color scheme for these different groups
 for k = 1:length(votes)

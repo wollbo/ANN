@@ -16,71 +16,30 @@ w = randi([2],100,31)/2;
 eta = 0.2;
 sigma_start = 1.5;
 sigma_end = 1.2;
-tau = epochs;
+tau = -epochs^2/log(sigma_end/sigma_start);
 % w = rand(100,31)
-
+%%
 for i = 1:epochs
    n_func = max(0, round(max_neighbour*exp(-i/(epochs/2))));
 %     n_func = 
    for j = randperm(349)
         update_index = [];
         
-%         for i = 1:length(w)
-%             distance(i) = sqrt((votes(j,:)-w(i,:))*(votes(j,:)-w(i,:))');
-%         end
-%         [~, index] = min(distance);
-        
         [distance index] = min(sum(abs(votes((j),:) - w),2));
-        
-%         for k = -n_func:n_func
-%             new_entry = find((abs((1:100)-(index + k*10)) <= n_func).*(1:100));
-%             new_entry_clean = new_entry(find(abs(mod(new_entry-1,10)-mod(index,10))<=n_func+1));
-%             update_index = [update_index new_entry_clean];
-%         end
-%        
-%         
-%         if isempty(update_index)
-%            update_index = index; 
-%         end
         
         distance = [];
 %         index = 1;
         
         for l = 1:length(w)
-%            distance(l)  = max(abs((mod(index,10)-mod(l,10)),...
-%                abs(((index - mod(index,10))/10)-((l - mod(l,10))/10)));
-           
-%            distance(l)  = max(abs((mod(index-l,10))),...
-%                abs(((index - mod(index,10))/10)-((l - mod(l,10))/10)));
-
             distance(l)  = max(abs((mod(abs(index-1),10)-mod(abs(l-1),10))),...
                abs(((index - mod(index,10))/10)-((l+1 - mod(l+1,10))/10)));
         end
-%         reshape(distance,[10 10])'
-        
-%         for l = 1:length(update_index)
-%            distance(l)  = abs((mod(index,10)-mod(update_index(l),10)))+...
-%                abs(((index - mod(index,10))/10)-((update_index(l) - mod(update_index(l),10))/10));
-%         end
         sigma =sigma_start*exp(-i^2/tau);
         distance_update = exp(-distance/sigma^2);
         
-        w = w + distance_update.*eta*(votes(j,:) - w);
-%         w(update_index,:) = w(update_index,:) + distance_update.*eta*(votes(j,:) - w(update_index,:));    
+        w = w + distance_update'.*eta*(votes(j,:) - w);
+        1
         
-%         w_logg_update1(j) = w(update_index(1),1);
-%         w_logg_update2(j) = w(1,2);
-%         w_logg_update3(j) = w(50,1);
-%         w_logg_update4(j) = w(50,2);
-%         w(end,end,end); 
-%         winner((i-1)*epochs+j)=index;
-%         z = zeros(100,31);
-%         z(update_index,:) = w(update_index,:)*10;
-%         w_test = z + w;
-%         imagesc(reshape((sum(w,2)),[10 10]))
-%         colorbar
-%         drawnow
-%         pause(1)
    end
    w_logg1(i) = w(1,1);
    w_logg2(i) = w(1,2);
