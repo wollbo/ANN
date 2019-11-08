@@ -23,7 +23,7 @@ for i = 1:epochs
    for j = randperm(349)
         update_index = [];
         
-        [distance index] = min(sum((votes((j),:) - w)).^2);
+        [distance index] = min(sum(((votes((j),:) - w)).^2));
         
         
         distance = [];
@@ -62,12 +62,12 @@ for i = 1:epochs
 %         colorbar
 %         drawnow
 end
-
+%%
 % Coding: 0=no party, 1='m', 2='fp', 3='s', 4='v', 5='mp', 6='kd', 7='c'
 % Use some color scheme for these different groups
 for k = 1:length(votes)
     for i = 1:length(w)
-        distance(i) = min(((votes(k,:) - w(i,:)).^2));
+        distance(i) = (sum((votes(k,:) - w(i,:)).^2),2);
     end
     [distance_ultimate(k) index_ultimate(k)] = min(distance);
 end
