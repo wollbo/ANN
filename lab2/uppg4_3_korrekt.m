@@ -23,7 +23,7 @@ for i = 1:epochs
    for j = randperm(349)
         update_index = [];
         
-        [distance index] = min(sum(((votes((j),:) - w)).^2),2);
+        [distance index] = min(sum((votes(j,:) - w).^2,2));
         
         
         distance = [];
