@@ -10,22 +10,20 @@ load mpdistrict.dat
 votes = reshape(votes,[349 31]);
 
 %SOM
-max_neighbour = 2;
 epochs = 500;
-w = randi([2],100,31)/2;
+% w = randi([2],100,31)/2;
+w = rand(100,31);
 eta = 0.02;
-sigma_start = 1.5;
-sigma_end = 0.75;
+sigma_start = 1;
+sigma_end = 0.25;
 tau = -epochs^2/log(sigma_end/sigma_start);
 % w = rand(100,31)
 %%
 for i = 1:epochs
-   n_func = max(0, round(max_neighbour*exp(-i/(epochs/2))));
-%     n_func = 
    for j = randperm(349)
         update_index = [];
         
-        [distance index] = min(sum(abs(votes((j),:) - w),2));
+        [distance index] = min(sum((votes((j),:) - w)).^2);
         
         
         distance = [];
@@ -36,9 +34,10 @@ for i = 1:epochs
                abs(((index-1 - mod(index-1,10))/10)-((l-1 - mod(l-1,10))/10)));
         end
         sigma =sigma_start*exp(-i^2/tau);
-        distance_update = exp(-distance/sigma^2);
+        distance_update = exp(-distance/(2*sigma^2));
         
         w = w + distance_update'.*eta.*(votes(j,:) - w);
+        winner(349*i+j)=index;
         
     
         
@@ -53,23 +52,26 @@ for i = 1:epochs
    w_logg2(i) = w(1,2);
    w_logg3(i) = w(50,1);
    w_logg4(i) = w(50,2);
-%     imagesc(reshape((sum(w,2)),[10 10])')
-%     colorbar
-%     drawnow
+    imagesc(reshape((sum(w,2)),[10 10])')
+    colorbar
+    drawnow
 
 
-    sigma
-     imagesc(reshape(distance_update,[10 10])')
-        colorbar
-        drawnow
+%     sigma
+%      imagesc(reshape(distance_update,[10 10])')
+%         colorbar
+%         drawnow
 end
 
 % Coding: 0=no party, 1='m', 2='fp', 3='s', 4='v', 5='mp', 6='kd', 7='c'
 % Use some color scheme for these different groups
 for k = 1:length(votes)
-        [distance_ultimate(k) index_ultimate(k)] = min(sum(abs(votes(j,:) - w),2));
+    for i = 1:length(w)
+        distance(i) = min(((votes(k,:) - w(i,:)).^2));
+    end
+    [distance_ultimate(k) index_ultimate(k)] = min(distance);
 end
-%%
+
 imagesc(reshape((sum(w,2)),[10 10])')
 % [sorted index_ultimate] = sort(index_ultimate);
 
