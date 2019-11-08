@@ -27,17 +27,25 @@ for i = 1:epochs
         
         [distance index] = min(sum(abs(votes((j),:) - w),2));
         
+        
         distance = [];
-%         index = 1;
+%         index = 100;
         
         for l = 1:length(w)
             distance(l)  = max(abs((mod(abs(index-1),10)-mod(abs(l-1),10))),...
-               abs(((index - mod(index,10))/10)-((l+1 - mod(l+1,10))/10)));
+               abs(((index-1 - mod(index-1,10))/10)-((l-1 - mod(l-1,10))/10)));
         end
         sigma =sigma_start*exp(-i^2/tau);
         distance_update = exp(-distance/sigma^2);
         
         w = w + distance_update'.*eta.*(votes(j,:) - w);
+        
+    
+        
+%         imagesc(reshape(distance_update,[10 10])') 
+%         colorbar
+%         drawnow
+%         pause(1)
         
         
    end
@@ -45,16 +53,21 @@ for i = 1:epochs
    w_logg2(i) = w(1,2);
    w_logg3(i) = w(50,1);
    w_logg4(i) = w(50,2);
-    imagesc(reshape((sum(w,2)),[10 10])')
-    colorbar
-    drawnow
+%     imagesc(reshape((sum(w,2)),[10 10])')
+%     colorbar
+%     drawnow
+
+
     sigma
+     imagesc(reshape(distance_update,[10 10])')
+        colorbar
+        drawnow
 end
 
 % Coding: 0=no party, 1='m', 2='fp', 3='s', 4='v', 5='mp', 6='kd', 7='c'
 % Use some color scheme for these different groups
 for k = 1:length(votes)
-        [distance_ultimate(k) index_ultimate(k)] = min(sum(abs(votes(k,:) - w),2));
+        [distance_ultimate(k) index_ultimate(k)] = min(sum(abs(votes(j,:) - w),2));
 end
 %%
 imagesc(reshape((sum(w,2)),[10 10])')
