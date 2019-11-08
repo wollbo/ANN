@@ -19,7 +19,7 @@ for i = 1:epochs
        distance = [];
 %        for k = 1:max(1,n_func)
 %            k;
-           [distance,index] = min(sum((abs(cities(j,:) - w_temp)),2));
+           [distance,index] = min(sum((abs(cities(j,:) - w_temp).^2),2));
 %            w_temp(k,:) = [];
 %        end
        update_index = (1+mod([index-floor(n_func):index+floor(n_func)]-1,size(w,1)));
