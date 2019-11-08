@@ -6,7 +6,7 @@ load cities.dat;
 
 %SOM
 max_neighbour = 3;
-epochs = 50;
+epochs = 100;
 eta = 0.2;
 w = rand(10,2);    
 
@@ -16,21 +16,24 @@ for i = 1:epochs
    for j = list
        w_temp = w;
        index = [];
-       for k = 1:max(1,n_func)
-           k;
-           [distance(k) index(k)] = min(sum((abs(cities(j,:) - w_temp)),2));
-           w_temp(k,:) = [];
-       end
-       
-       update_index = (1+mod([index-floor(n_func/2):index+floor(n_func/2)]-1,size(w,1)));
-       
-       w(update_index,:) = w(update_index,:) + eta*(cities(j,:) - w(update_index,:));
+       distance = [];
+%        for k = 1:max(1,n_func)
+%            k;
+           [distance,index] = min(sum((abs(cities(j,:) - w_temp)),2));
+%            w_temp(k,:) = [];
+%        end
+       update_index = (1+mod([index-floor(n_func):index+floor(n_func)]-1,size(w,1)));
+%        update_index
+%        distance = sum(abs(cities(j,:) - w(update_index,:))./(abs(cities(j,:) - w(index,:)))/2,2)
+       distance = [fliplr(2:(n_func+1)) 1 2:(n_func+1)];
+       w(update_index,:) = w(update_index,:) + eta*(cities(j,:) - w(update_index,:))./distance';
+       1
    end
-%    scatter(cities(:,1),cities(:,2))
-%    hold on
-%    scatter(w(:,1),w(:,2))
-%    hold off
-%    drawnow
+   scatter(cities(:,1),cities(:,2))
+   hold on
+   scatter(w(:,1),w(:,2))
+   hold off
+   drawnow
 end
 
 for k = 1:size(cities,1)
