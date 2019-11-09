@@ -10,12 +10,12 @@ load mpdistrict.dat
 votes = reshape(votes,[349 31]);
 
 %SOM
-epochs = 500;
-% w = randi([2],100,31)/2;
-w = rand(100,31);
-eta = 0.2;
-sigma_start = 1;
-sigma_end = 0.6;
+epochs = 200;
+w = randi([2],100,31)/2;
+% w = rand(100,31);
+eta = 0.002;
+sigma_start = 3;
+sigma_end = 1.2;
 tau = -epochs^2/log(sigma_end/sigma_start);
 % w = rand(100,31)
 %%
@@ -23,7 +23,14 @@ for i = 1:epochs
    for j = randperm(349)
         update_index = [];
         
-        [distance index] = min(sum((votes(j,:) - w).^2,2));
+%         [distance index] = min(sum((votes(j,:) - w).^2,2));
+
+%         for k = 1:length(votes)
+             for k = 1:length(w)
+                 distance_input(k) = sum((votes(j,:) - w(k,:)).^2,2);
+             end
+            [~, index] = min(distance_input);
+%         end
         
         
         distance = [];
@@ -34,7 +41,8 @@ for i = 1:epochs
                abs(((index-1 - mod(index-1,10))/10)-((l-1 - mod(l-1,10))/10)));
         end
         sigma =sigma_start*exp(-i^2/tau);
-        distance_update = exp(-distance/(2*sigma^2));
+        distance_update = exp(-distance/(2*sigma^2)).*(distance <= sigma);
+%         distance_n = distance <= sigma;
         
 %         w_delta = (eta.*(votes(j,:) - distance_update'.*w));
         w_delta = distance_update'.*(eta.*(votes(j,:) - w));
@@ -53,7 +61,7 @@ for i = 1:epochs
 %         drawnow
 %         pause(1)
         
-        
+        sigma
    end
    w_logg1(i) = w(1,1);
    w_logg2(i) = w(1,2);
@@ -76,17 +84,12 @@ end
 for k = 1:length(votes)
     for i = 1:length(w)
         distance(i) = sum((votes(k,:) - w(i,:)).^2,2);
+        
     end
     [distance_ultimate(k) index_ultimate(k)] = min(distance);
 end
 
-% index_ultimate1 = index_ultimate;
 
-% for k = 1:length(votes)
-%         [distance_ultimate(k) index_ultimate(k)] = min(sum(abs(votes(k,:) - w),2));
-% end
-
-% index_ultimate == index_ultimate1
 %%
 % [sorted sorted_index] = sort(distance_ultimate);
 
@@ -107,10 +110,15 @@ end
 for i = 0:7
     figure()
     ind = index_ultimate(find(mpparty==i));
+%     uni = find(mpparty(index_ultimate)==i);
+    
     uni = unique(ind);
     cnt = histc(ind,uni);
     scatter(coord(uni,2),coord(uni,1),cnt*100,'markerfacecolor',[color_code(1+i,:)],...
         'markeredgecolor',[color_code(1+i,:)],'LineWidth',2)
+
+%     scatter(coord(uni,2),coord(uni,1),'markerfacecolor',[color_code(1+i,:)],...
+%         'markeredgecolor',[color_code(1+i,:)],'LineWidth',2)
 
 %     imagesc(reshape(sum(votes(ind,:)*w',1),[10 10])')
     hold on
