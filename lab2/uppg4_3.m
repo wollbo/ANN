@@ -21,7 +21,7 @@ for i = 1:epochs
 %     n_func = 0;
    for j = randperm(349)
         update_index = [];
-        [distance index] = min(sum(abs(votes((j),:) - w),2));
+        [distance index] = min(sum((votes((j),:) - w).^2,2));
         for k = -n_func:n_func
             update_index = [update_index find((abs((1:100)-(index + k*10)) <= n_func).*(1:100))]; %HÄR ÄR FELET, SE UPP SÅ INTE FLER RADER UPPDATERAS
         end
