@@ -56,7 +56,7 @@ for i = 1:epochs
 %         drawnow
 %         pause(1)
         
-        sigma
+%         sigma
    end
    w_logg1(i) = w(1,1);
    w_logg2(i) = w(1,2);

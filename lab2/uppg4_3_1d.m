@@ -10,22 +10,20 @@ load mpdistrict.dat
 votes = reshape(votes,[349 31]);
 
 %SOM
-epochs = 200;
-w = randi([2],100,31)/2;
-% w = rand(100,31);
-eta = 0.02;
-sigma_start = 3;
-sigma_end = 1;
+epochs = 20;
+% w = randi([2],100,31)/2;
+w = rand(100,31);
+eta = 0.2;
+sigma_start = 2.5;
+sigma_end = 0.8;
 tau = -epochs^2/log(sigma_end/sigma_start);
 % w = rand(100,31)
+count_winners = zeros(100,1);
 %%
 for i = 1:epochs
    for j = randperm(349)
+%     for j = 1:349
         update_index = [];
-        
-%         [distance index] = min(sum((votes(j,:) - w).^2,2));
-
-%         for k = 1:length(votes)
              for k = 1:length(w)
                  distance_input(k) = sum((votes(j,:) - w(k,:)).^2,2);
              end
@@ -33,21 +31,45 @@ for i = 1:epochs
 %         end
         
         
-        distance = [];
+        distance = zeros(length(w),2);
 %         index = 100;
         
+%         for l = 1:length(w)
+%             distance(l)  = max(abs((mod(abs(index-1),10)-mod(abs(l-1),10))),...
+%                abs(((index-1 - mod(index-1,10))/10)-((l-1 - mod(l-1,10))/10)));
+%         end
         for l = 1:length(w)
-            distance(l)  = max(abs((mod(abs(index-1),10)-mod(abs(l-1),10))),...
-               abs(((index-1 - mod(index-1,10))/10)-((l-1 - mod(l-1,10))/10)));
+            distance(l,:)  = [abs((mod(abs(index-1),10)-mod(abs(l-1),10))),...
+               abs(((index-1 - mod(index-1,10))/10)-((l-1 - mod(l-1,10))/10))];
         end
-        sigma =sigma_start*exp(-i^2/tau);
+        
+        sigma =ceil(sigma_start*exp(-i^2/tau));
+      
         
 %         distance_update = exp(-distance/(2*sigma^2)).*(distance <= sigma);
-        distance_update = (distance <= sigma);
+%         distance_update = (distance <= sigma);
+        distance_update = (distance(:,1)+distance(:,2))'<=sigma;
+
+        update_index = find(distance_update);
+        err = (votes(j,:) - w(update_index,:));
         
-        w_delta = distance_update'.*(eta.*(votes(j,:) - w));
-        w = w + (w_delta);
-        winner(349*i+j)=index;
+        w_delta = eta*err;
+        w(update_index,:) = w(update_index,:) + (w_delta);
+        
+        winner(349*(i-1)+j)=index;
+        
+%         u = unique(nonzeros(winner));
+%         c = histc(nonzeros(winner),u);
+        
+%         u = unique(nonzeros(winner));
+%         c = histc((winner),u);
+%         
+%         count_winners(u) = c;
+        
+%         imagesc(reshape(count_winners,[10 10]))
+%         drawnow
+        
+        
         
     
         
@@ -56,18 +78,22 @@ for i = 1:epochs
 %         drawnow
 %         pause(1)
         
-        sigma
+%         sigma
+        w_logg1(349*(i-1)+j) = sum(w(:,1))/100;
+        w_logg2(349*(i-1)+j) = w(1,2);
+        w_logg3(349*(i-1)+j) = sum(w(:,25))/100;
+        w_logg4(349*(i-1)+j) = w(50,2);
    end
-   w_logg1(i) = w(1,1);
-   w_logg2(i) = w(1,2);
-   w_logg3(i) = w(50,1);
-   w_logg4(i) = w(50,2);
+%    w_logg1(i) = w(1,1);
+%    w_logg2(i) = w(1,2);
+%    w_logg3(i) = w(50,1);
+%    w_logg4(i) = w(50,2);
 %     imagesc(reshape((sum(w,2)),[10 10])')
 %     imagesc(reshape(sum(votes*w',1),[10 10])')
-%     imagesc(reshape(sum(w_delta,2),[10 10]),[-0.5 0.5])
+    imagesc(reshape(sum(w,2),[10 10]),[19 23])
 %     imagesc(reshape(w(:,1),[10 10]),[-1 1])
-%     colorbar
-%     drawnow
+    colorbar
+    drawnow
 
 
 %     sigma
@@ -75,9 +101,18 @@ for i = 1:epochs
 %         colorbar
 %         drawnow
 end
+
+u = unique(nonzeros(winner));
+c = histc((winner),u);
+ 
+count_winners(u) = c;
+imagesc(reshape(count_winners,[10 10]))
+colorbar
+        
 %%
 % Coding: 0=no party, 1='m', 2='fp', 3='s', 4='v', 5='mp', 6='kd', 7='c'
 % Use some color scheme for these different groups
+distance = [];
 for k = 1:length(votes)
     for i = 1:length(w)
         distance(i) = sum((votes(k,:) - w(i,:)).^2,2);        
@@ -89,8 +124,9 @@ end
 
 %%
 % [sorted sorted_index] = sort(distance_ultimate);
-
+figure
 imagesc(reshape((sum(w,2)),[10 10])')
+colorbar
 % [sorted index_ultimate] = sort(index_ultimate);
 
 color_code = [0 0 0;0 0.4470 0.7410; 0.8500 0.3250 0.0980; 0.9290 0.6940 0.1250; ...
@@ -147,15 +183,20 @@ end
 % legend('No Party','M', 'Fp', 'S', 'V', 'Mp', 'Kd', 'C','location','northeastoutside')  
 % axis([-0.1 1 -0.1 1])
 %%
-for i = 0:7
-    ind = index_ultimate(find(mpparty==i));
-    i
-    ind
-    mpparty(ind)
-end
+% for i = 0:7
+%     ind = index_ultimate(find(mpparty==i));
+%     i
+%     ind
+%     mpparty(ind)
+% end
 
 
-
+figure()
+plot(w_logg4)
+hold on
+% plot(w_logg3,'linewidth',2)
+plot(w_logg2)
+% plot(w_logg1,'linewidth',2)
 
 
 
