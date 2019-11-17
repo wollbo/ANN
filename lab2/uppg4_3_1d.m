@@ -10,12 +10,12 @@ load mpdistrict.dat
 votes = reshape(votes,[349 31]);
 
 %SOM
-epochs = 20;
+epochs = 100;
 % w = randi([2],100,31)/2;
 w = rand(100,31);
 eta = 0.2;
-sigma_start = 2.5;
-sigma_end = 0.8;
+sigma_start = 3.5;
+sigma_end = 1;
 tau = -epochs^2/log(sigma_end/sigma_start);
 % w = rand(100,31)
 count_winners = zeros(100,1);
@@ -43,36 +43,23 @@ for i = 1:epochs
                abs(((index-1 - mod(index-1,10))/10)-((l-1 - mod(l-1,10))/10))];
         end
         
-        sigma =ceil(sigma_start*exp(-i^2/tau));
+        sigma =(sigma_start*exp(-i^2/tau));
       
         
-%         distance_update = exp(-distance/(2*sigma^2)).*(distance <= sigma);
+%         distance_update = exp(-distance/(2*sigma^2)).*(distance <=sigma);%
 %         distance_update = (distance <= sigma);
-        distance_update = (distance(:,1)+distance(:,2))'<=sigma;
+        distance_update = (distance(:,1)+distance(:,2))'<=round(sigma);%Manhattan
+%         distance_update = (sqrt(distance(:,1).^2+distance(:,2).^2))'<=sigma;%Absolute Distance
 
+        distance_update = exp(-sqrt(distance(:,1).^2+distance(:,2).^2)./(sigma^2)).*distance_update';
+        
         update_index = find(distance_update);
         err = (votes(j,:) - w(update_index,:));
         
         w_delta = eta*err;
         w(update_index,:) = w(update_index,:) + (w_delta);
-        
         winner(349*(i-1)+j)=index;
-        
-%         u = unique(nonzeros(winner));
-%         c = histc(nonzeros(winner),u);
-        
-%         u = unique(nonzeros(winner));
-%         c = histc((winner),u);
-%         
-%         count_winners(u) = c;
-        
-%         imagesc(reshape(count_winners,[10 10]))
-%         drawnow
-        
-        
-        
-    
-        
+       
 %         imagesc(reshape(distance_update,[10 10])') 
 %         colorbar
 %         drawnow
@@ -84,16 +71,13 @@ for i = 1:epochs
         w_logg3(349*(i-1)+j) = sum(w(:,25))/100;
         w_logg4(349*(i-1)+j) = w(50,2);
    end
-%    w_logg1(i) = w(1,1);
-%    w_logg2(i) = w(1,2);
-%    w_logg3(i) = w(50,1);
-%    w_logg4(i) = w(50,2);
 %     imagesc(reshape((sum(w,2)),[10 10])')
 %     imagesc(reshape(sum(votes*w',1),[10 10])')
-    imagesc(reshape(sum(w,2),[10 10]),[19 23])
+%     imagesc(reshape(sum(w,2),[10 10]))
 %     imagesc(reshape(w(:,1),[10 10]),[-1 1])
-    colorbar
-    drawnow
+%     imagesc(reshape(distance_update,[10 10])) 
+%     colorbar
+%     drawnow
 
 
 %     sigma
@@ -104,7 +88,6 @@ end
 
 u = unique(nonzeros(winner));
 c = histc((winner),u);
- 
 count_winners(u) = c;
 imagesc(reshape(count_winners,[10 10]))
 colorbar
@@ -117,10 +100,24 @@ for k = 1:length(votes)
     for i = 1:length(w)
         distance(i) = sum((votes(k,:) - w(i,:)).^2,2);        
     end
-%     distance = votes(k,:)*w'
+%     [dist ind]=min(distance)
+%     distance = votes(k,:)*w';
+%     [dist ind]=min(distance)
     [distance_ultimate(k) index_ultimate(k)] = min(distance);
+%     index_ultimate
+%     imagesc(reshape(distance,[10 10]))
+%     colorbar
+%     drawnow
+%     pause(0.5)
 end
 
+
+count_winners=[];
+u = unique((index_ultimate));
+c = histc((index_ultimate),u);
+count_winners(u) = c;
+imagesc(reshape(count_winners,[10 10]))
+colorbar
 
 %%
 % [sorted sorted_index] = sort(distance_ultimate);
