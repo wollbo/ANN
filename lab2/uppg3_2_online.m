@@ -10,10 +10,10 @@ x_test = 6:5:61;
 % f_square = sign(2*f_sin);
 
 %With added noise
-f_sin = (sin(2*x_input))+ randn(1,length(x_input))*0.0;
-f_square = sign(2*f_sin)+ randn(1,length(x_input))*0.0;
+f_sin = (sin(2*x_input))+ randn(1,length(x_input))*0.1;
+f_square = sign(2*f_sin)+ randn(1,length(x_input))*0.1;
 
-n_nodes = length(x_input);
+n_nodes = 30;
 epochs = 300;
 eta = 0.01;%You can use larger step size with on line learning, as it updates more slowly
 holdout = 5;
@@ -33,8 +33,8 @@ mu_s = rand(n_nodes,1)*2*pi;
 % mu_r = linspace(0,2*pi,n_nodes)'; 
 % mu_s = linspace(0,2*pi,n_nodes)';
 
-sigma_r = ones(1,n_nodes)'*0.1; %Largers variance increases variance, duh, and minimizes bias
-sigma_s = ones(1,n_nodes)'*0.1;
+sigma_r = ones(1,n_nodes)'*0.1*0.5; %Largers variance increases variance, duh, and minimizes bias
+sigma_s = ones(1,n_nodes)'*0.1*0.5;
 
 rbf_nodes_r = exp(-(x_input-mu_r).^2./(2*sigma_r));
 rbf_nodes_s = exp(-(x_input-mu_s).^2./(2*sigma_s));
@@ -85,20 +85,21 @@ for k = 1:epochs
     end
 end
 
-plot(x_input,output_r_update)
+subplot(1,2,1)
+plot(x_input,output_r_update, 'linewidth',1)
 hold on
-plot(x_input,f_square)
-for i = 1:size(rbf_nodes_r,1)
-    plot(x_input,rbf_nodes_r(i,:),'linestyle','-.')
-end
+plot(x_input,f_square, 'linewidth',1)
+% for i = 1:size(rbf_nodes_r,1)
+%     plot(x_input,rbf_nodes_r(i,:),'linestyle','-.')
+% end
 
-figure()
-plot(x_input,output_s_update)
+subplot(1,2,2)
+plot(x_input,output_s_update, 'linewidth',1)
 hold on
-plot(x_input,f_sin)
-for i = 1:size(rbf_nodes_s,1)
-    plot(x_input,rbf_nodes_s(i,:),'linestyle','-.')
-end
+plot(x_input,f_sin, 'linewidth',1)
+% for i = 1:size(rbf_nodes_s,1)
+%     plot(x_input,rbf_nodes_s(i,:),'linestyle','-.')
+% end
 
 residual_r_step = mean(abs(sign(output_r_update(x_test)) - f_square(x_test)))
 residual_s = mean(abs(output_s_update(x_test) - f_sin(x_test)))

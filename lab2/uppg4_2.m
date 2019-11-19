@@ -39,7 +39,7 @@ end
 for k = 1:size(cities,1)
    [distance_sort(k) index_sort(k)] = min(sum(abs(((cities(k,:) - w).^2)),2));
 end
-
+%%
 
 
 

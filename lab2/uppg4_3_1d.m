@@ -7,14 +7,15 @@ load mpparty.dat;
 load mpsex.dat;
 load mpdistrict.dat
 
-votes = reshape(votes,[349 31]);
+% votes = reshape(votes,[349 31]);
+votes = reshape(votes,[31 349])';
 
 %SOM
 epochs = 100;
 w = rand(100,31);
 eta = 0.2;
-sigma_start = 2.5;
-sigma_end = 1;
+sigma_start = 4.5;
+sigma_end = 1.5;
 tau = -epochs^2/log(sigma_end/sigma_start);
 count_winners = zeros(100,1);
 %%
@@ -67,7 +68,6 @@ end
 %%
 % Coding: 0=no party, 1='m', 2='fp', 3='s', 4='v', 5='mp', 6='kd', 7='c'
 % Use some color scheme for these different groups
-distance = [];
 for k = 1:length(votes)
     distance = zeros(1,length(w));
     for i = 1:length(w)
@@ -79,28 +79,45 @@ end
 color_code = [0 0 0;0 0.4470 0.7410; 0.8500 0.3250 0.0980; 0.9290 0.6940 0.1250; ...
     0.4940 0.1840 0.5560; 0.4660 0.6740 0.1880; 0.3010 0.7450 0.9330; 0.6350 0.0780 0.1840];
 title_names = ["No Party";"M"; "Fp";  "S"; "V"; "Mp"; "Kd"; "C"];
+
+coord = zeros(100,2);
+for i = 1:100
+    num = i-1;
+    coord(i,:) = [(num-mod(num,10))/10 mod(num,10)];
+end
+
+
+%%
+subplot(2,4,1)
+
 for i = 0:7
-    figure()
-    temp = zeros(1,length(w))
+%     figure()
+    subplot(2,4,i+1)
+    temp = zeros(1,length(w));
     party_ind = find(mpparty==i);
     ind = index_ultimate(party_ind);
     
     uni = unique(ind);
     cnt = histc(ind,uni);
     
+% scatter(coord(uni,2),coord(uni,1),cnt*100,'markerfacecolor',[color_code(1+i,:)],...
+%         'markeredgecolor',[color_code(1+i,:)],'LineWidth',2)
+    
     temp(uni)=cnt;
     imagesc(reshape(temp,[10 10]))
-    
+%     imagesc(sum(reshape(temp,[10 10]),2))
     hold on
-%     axis([-1 10 -1 11])
+%     axis([0 11 0 11])
     title(title_names(i+1,:))
+%     axis equal
 end
 %%
 title_sex = ["Men","Women"]
 
 for i = 0:1
+    subplot(1,2,i+1)
     temp = zeros(1,length(w));
-    figure()
+%     figure()
     ind = index_ultimate(find(mpsex==i));
     
     uni = unique(ind);
@@ -110,12 +127,34 @@ for i = 0:1
     imagesc(reshape(temp,[10 10]))
 
     hold on
-    axis([-1 10 -1 11])
+%     axis([-1 10 -1 11])
     title(title_sex(i+1))
 end
 
 % legend('No Party','M', 'Fp', 'S', 'V', 'Mp', 'Kd', 'C','location','northeastoutside')  
 % axis([-0.1 1 -0.1 1])
+%%
+% title_sex = ["Men","Women"]
+district = [1:29]
+
+for i = 1:29
+    subplot(5,6,i)
+    temp = zeros(1,length(w));
+%     figure()
+    ind = index_ultimate(find(mpdistrict==i));
+    
+    uni = unique(ind);
+    cnt = histc(ind,uni);
+    
+    temp(uni)=cnt;
+    imagesc(reshape(temp,[10 10]))
+
+    hold on
+%     axis([-1 10 -1 11])
+    text_title = [district(i)];
+    title(text_title)
+%     axis off
+end
 %%
 % for i = 0:7
 %     ind = index_ultimate(find(mpparty==i));

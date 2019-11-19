@@ -13,9 +13,9 @@ f_square = sign(2*f_sin);
 % f_sin = (sin(2*x_input))+ randn(1,length(x_input))*0.05;
 % f_square = sign(2*f_sin)+ randn(1,length(x_input))*0.05;
 
-n_nodes = 60;
+n_nodes = 100;
 % n_nodes = 10;
-epochs = 20000;
+epochs = 2000;
 eta = 0.2/n_nodes;
 holdout = 5;
 
@@ -27,8 +27,8 @@ w_s = 0.1 *randn(1,n_nodes);
 mu_r = linspace(0,2*pi,n_nodes)'; 
 mu_s = linspace(0,2*pi,n_nodes)';
 
-sigma_r = ones(1,n_nodes)'*0.01*0.2/2;
-sigma_s = ones(1,n_nodes)'*0.01*0.2/2;
+sigma_r = ones(1,n_nodes)'*0.01*0.2;
+sigma_s = ones(1,n_nodes)'*0.01*0.2*40;
 
 rbf_nodes_r = exp(-(x_input-mu_r).^2./(2*sigma_r));
 rbf_nodes_s = exp(-(x_input-mu_s).^2./(2*sigma_s));

@@ -6,7 +6,7 @@ b = load('ballist.dat');
 input_var = [b(:,1) b(:,2)];
 output_var = [b(:,3) b(:,4)];
 
-n_nodes = 5;
+n_nodes = 2;
 epochs = 200;
 epochs_CL = 100;
 eta_CL = 0.2;
@@ -95,7 +95,7 @@ for i = 1:length(input_var)
     output(i,:) = w*reshape(rbf(i,:,:),[2,n_nodes])';
 end
 
-
+figure()
 [xq,yq]=meshgrid(0:0.05:1,0:0.05:1);
 vq = griddata(input_var(:,1),input_var(:,2),output(:,1),xq,yq);
 mesh(xq,yq,vq,'edgecolor',[0 0.4470 0.7410])
